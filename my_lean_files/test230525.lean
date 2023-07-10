@@ -1,11 +1,11 @@
 example (n : Nat) : n + 1 = Nat.succ n := by
   show Nat.succ n = Nat.succ n
-  rfl 
+  rfl
 
--- is equivalent to 
+-- is equivalent to
 
 example (n : Nat) : n + 1 = Nat.succ n := by
-  rfl 
+  rfl
 
 -- example from the book that I really don't understand
 example : ∃ x, x + 2 = 8 := by
