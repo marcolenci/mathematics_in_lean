@@ -1,4 +1,3 @@
-import Mathlib.Tactic
 import Mathlib.Topology.Instances.Real
 
 open Set Filter Topology
@@ -43,13 +42,14 @@ variable (f : ℝ → ℝ) (x₀ y₀ : ℝ)
 #check Tendsto (f ∘ (↑)) (comap ((↑) : ℚ → ℝ) (𝓝 x₀)) (𝓝 y₀)
 
 section
+
 variable {α β γ : Type _} (F : Filter α) {m : γ → β} {n : β → α}
 
 #check (comap_comap : comap m (comap n F) = comap (n ∘ m) F)
 
 end
 
-example : 𝓝 (x₀, y₀) = 𝓝 x₀ ×ˢ 𝓝 y₀ :=
+example : 𝓝 (x₀, y₀) = 𝓝 x₀ ×ᶠ 𝓝 y₀ :=
   nhds_prod_eq
 
 #check le_inf_iff
@@ -59,12 +59,12 @@ example (f : ℕ → ℝ × ℝ) (x₀ y₀ : ℝ) :
       Tendsto (Prod.fst ∘ f) atTop (𝓝 x₀) ∧ Tendsto (Prod.snd ∘ f) atTop (𝓝 y₀) :=
   sorry
 
-example (x₀ : ℝ) : HasBasis (𝓝 x₀) (fun ε : ℝ ↦ 0 < ε) fun ε ↦ Ioo (x₀ - ε) (x₀ + ε) :=
+example (x₀ : ℝ) : HasBasis (𝓝 x₀) (fun ε : ℝ => 0 < ε) fun ε => Ioo (x₀ - ε) (x₀ + ε) :=
   nhds_basis_Ioo_pos x₀
 
 example (u : ℕ → ℝ) (x₀ : ℝ) :
     Tendsto u atTop (𝓝 x₀) ↔ ∀ ε > 0, ∃ N, ∀ n ≥ N, u n ∈ Ioo (x₀ - ε) (x₀ + ε) := by
-  have : atTop.HasBasis (fun _ : ℕ ↦ True) Ici := atTop_basis
+  have : atTop.HasBasis (fun n : ℕ => True) Ici := atTop_basis
   rw [this.tendsto_iff (nhds_basis_Ioo_pos x₀)]
   simp
 
@@ -80,9 +80,11 @@ example (u v : ℕ → ℝ) (h : u =ᶠ[atTop] v) (x₀ : ℝ) :
     Tendsto u atTop (𝓝 x₀) ↔ Tendsto v atTop (𝓝 x₀) :=
   tendsto_congr' h
 
-#check eventually_of_forall
-#check Eventually.mono
-#check Eventually.and
+#check @eventually_of_forall
+
+#check @Eventually.mono
+
+#check @Eventually.and
 
 example (P Q R : ℕ → Prop) (hP : ∀ᶠ n in atTop, P n) (hQ : ∀ᶠ n in atTop, Q n)
     (hR : ∀ᶠ n in atTop, P n ∧ Q n → R n) : ∀ᶠ n in atTop, R n := by
@@ -92,11 +94,14 @@ example (P Q R : ℕ → Prop) (hP : ∀ᶠ n in atTop, P n) (hQ : ∀ᶠ n in a
 
 example (P Q R : ℕ → Prop) (hP : ∀ᶠ n in atTop, P n) (hQ : ∀ᶠ n in atTop, Q n)
     (hR : ∀ᶠ n in atTop, P n ∧ Q n → R n) : ∀ᶠ n in atTop, R n := by
-  filter_upwards [hP, hQ, hR] with n h h' h''
+  filter_upwards [hP, hQ, hR]
+  intro n h h' h''
   exact h'' ⟨h, h'⟩
 
 #check mem_closure_iff_clusterPt
+
 #check le_principal_iff
+
 #check neBot_of_le
 
 example (u : ℕ → ℝ) (M : Set ℝ) (x : ℝ) (hux : Tendsto u atTop (𝓝 x))
