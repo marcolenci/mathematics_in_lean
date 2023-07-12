@@ -29,7 +29,7 @@ variable (f : α → Set β)
 #check ⋃ i, f i
 #check ⋂ i, f i
 
-#reduce ⋃ i, f i -- study!!
+#reduce ⋃ i, f i 
 #reduce ⋂ i, f i -- study!!
 
 end Sets
