@@ -289,11 +289,23 @@ example (h : ∀ a, ∃ x, f x > a) : ¬FnHasUb f := by
   have : f x ≤ a := fnuba x
   linarith
 
-example (h : ∀ a, ∃ x, f x < a) : ¬FnHasLb f :=
-  sorry
+example (h : ∀ a, ∃ x, f x < a) : ¬FnHasLb f := by
+  intro fhlb
+  rcases fhlb with ⟨a, fhlba⟩
+  rcases h a with ⟨x, hx⟩
+  unfold FnLb at fhlba
+  let altefx := fhlba x
+  linarith
+-- I'd like to find a less "white glove" way to get False but I don't know now
 
-example : ¬FnHasUb fun x ↦ x :=
-  sorry
+example : ¬FnHasUb fun x ↦ x := by
+  intro hinit
+  rcases hinit with ⟨a, ha⟩
+  unfold FnUb at ha
+  let hcontr := ha (a + 1)
+  simp at hcontr -- note the use of 'simp at xxx'!!
+  linarith
+  done
 
 #check (not_le_of_gt : a > b → ¬a ≤ b)
 #check (not_lt_of_ge : a ≥ b → ¬a < b)
