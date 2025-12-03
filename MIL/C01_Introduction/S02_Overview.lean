@@ -60,3 +60,4 @@ intro ⟨k, hk⟩
 use m*k
 rw [hk]
 exact Nat.mul_add m k k
+done -- I'm aware that 'done' does nothing

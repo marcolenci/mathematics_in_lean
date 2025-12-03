@@ -5,6 +5,8 @@ import MIL.Common
 section
 variable (R : Type*) [Ring R]
 
+#check add_assoc
+
 #check (add_assoc : ∀ a b c : R, a + b + c = a + (b + c))
 #check (add_comm : ∀ a b : R, a + b = b + a)
 #check (zero_add : ∀ a : R, 0 + a = a)
@@ -51,9 +53,15 @@ variable {R : Type*} [Ring R]
 theorem neg_add_cancel_left (a b : R) : -a + (a + b) = b := by
   rw [← add_assoc, neg_add_cancel, zero_add]
 
+-- mine
+example (b : R) : b + -b = 0 := by
+  rw[add_comm, neg_add_cancel]
+
 -- Prove these:
 theorem add_neg_cancel_right (a b : R) : a + b + -b = a := by
   sorry
+  -- TO DO!!!
+
 
 theorem add_left_cancel {a b c : R} (h : a + b = a + c) : b = c := by
   sorry
@@ -143,4 +151,3 @@ theorem mul_inv_rev (a b : G) : (a * b)⁻¹ = b⁻¹ * a⁻¹ := by
 end MyGroup
 
 end
-

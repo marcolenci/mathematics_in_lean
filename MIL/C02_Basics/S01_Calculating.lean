@@ -5,6 +5,10 @@ example (a b c : ℝ) : a * b * c = b * (a * c) := by
   rw [mul_comm a b]
   rw [mul_assoc b a c]
 
+-- me
+#check mul_comm
+#check mul_assoc
+
 -- Try these.
 example (a b c : ℝ) : c * b * a = b * (a * c) := by
   sorry
