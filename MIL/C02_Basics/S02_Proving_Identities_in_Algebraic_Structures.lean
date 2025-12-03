@@ -59,7 +59,7 @@ example (b : R) : b + -b = 0 := by
 
 -- Prove these:
 theorem add_neg_cancel_right (a b : R) : a + b + -b = a := by
-  sorry
+  abel
   -- TO DO!!!
 
 
