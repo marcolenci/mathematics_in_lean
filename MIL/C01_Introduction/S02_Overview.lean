@@ -56,7 +56,7 @@ example : ∀ m n : Nat, Even n → Even (m * n) := by
 -- me
 example : ∀ m n : Nat, Even n → Even (m * n) := by
 intro m n
-intro exs
-⟨k, hk⟩ := exs
+intro ⟨k, hk⟩
 use m*k
-ring
+rw [hk]
+exact Nat.mul_add m k k
