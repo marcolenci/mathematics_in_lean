@@ -54,4 +54,5 @@ example : ∀ m n : Nat, Even n → Even (m * n) := by
   intros; simp [*, parity_simps]
 
 -- my stuff
-example : ∀ m n : Nat, Even n → Even (m * n) := sorry
+example : ∀ m n : Nat, Even n → Even (m * n) := by
+intro m n
