@@ -59,8 +59,11 @@ example (b : R) : b + -b = 0 := by
 
 -- Prove these:
 theorem add_neg_cancel_right (a b : R) : a + b + -b = a := by
-  abel
-  -- TO DO!!!
+--  'abel' is the "right" technique (for some reason, noncomm_ring doesn't work)
+  have h : b + -b = 0 := by
+    rw[add_comm, neg_add_cancel]
+  rw[add_assoc, h, add_comm, zero_add]
+  done
 
 
 theorem add_left_cancel {a b c : R} (h : a + b = a + c) : b = c := by
