@@ -49,6 +49,7 @@ end MyRing
 
 namespace MyRing
 variable {R : Type*} [Ring R]
+-- mine: variable (a b c d : R)
 
 theorem neg_add_cancel_left (a b : R) : -a + (a + b) = b := by
   rw [← add_assoc, neg_add_cancel, zero_add]
@@ -65,8 +66,12 @@ theorem add_neg_cancel_right (a b : R) : a + b + -b = a := by
   rw[add_assoc, h, add_comm, zero_add]
   done
 
+theorem mythm (a b c : R) (h : b = c) : a + b = a + c := by
+  sorry
 
 theorem add_left_cancel {a b c : R} (h : a + b = a + c) : b = c := by
+--  have h1 := mythm (-a) (a+b) (a+c)
+-- continue here
   sorry
 
 theorem add_right_cancel {a b c : R} (h : a + b = c + b) : a = c := by
