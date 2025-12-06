@@ -69,10 +69,17 @@ theorem add_neg_cancel_right (a b : R) : a + b + -b = a := by
 theorem mythm (a b c : R) (h : b = c) : a + b = a + c := by
   sorry
 
+-- my second attempt (helped by the solutions)
 theorem add_left_cancel {a b c : R} (h : a + b = a + c) : b = c := by
---  have h1 := mythm (-a) (a+b) (a+c)
--- continue here
-  sorry
+  rw [← neg_add_cancel_left a b, h, ← add_assoc, neg_add_cancel, zero_add]
+  done
+
+-- my first attempt
+example {a b c : R} (h : a + b = a + c) : b = c := by
+  have h1 := (mythm (-a) (a+b) (a+c)) h
+  rw [← add_assoc, ← add_assoc, neg_add_cancel, zero_add, zero_add] at h1
+  exact h1
+  done
 
 theorem add_right_cancel {a b c : R} (h : a + b = c + b) : a = c := by
   sorry
