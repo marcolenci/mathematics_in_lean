@@ -105,7 +105,10 @@ theorem neg_zero : (-0 : R) = 0 := by
   rw [add_zero]
 
 theorem neg_neg (a : R) : - -a = a := by
-  sorry
+  have : -a + a = 0 := by
+    exact neg_add_cancel a
+  exact neg_eq_of_add_eq_zero this
+  done
 
 end MyRing
 
