@@ -66,15 +66,15 @@ theorem add_neg_cancel_right (a b : R) : a + b + -b = a := by
   rw[add_assoc, h, add_comm, zero_add]
   done
 
-theorem mythm (a b c : R) (h : b = c) : a + b = a + c := by
-  sorry
-
 -- my second attempt (helped by the solutions)
 theorem add_left_cancel {a b c : R} (h : a + b = a + c) : b = c := by
   rw [← neg_add_cancel_left a b, h, ← add_assoc, neg_add_cancel, zero_add]
   done
 
 -- my first attempt
+theorem mythm (a b c : R) (h : b = c) : a + b = a + c := by
+  rw [h]
+
 example {a b c : R} (h : a + b = a + c) : b = c := by
   have h1 := (mythm (-a) (a+b) (a+c)) h
   rw [← add_assoc, ← add_assoc, neg_add_cancel, zero_add, zero_add] at h1
@@ -92,8 +92,10 @@ theorem mul_zero (a : R) : a * 0 = 0 := by
 theorem zero_mul (a : R) : 0 * a = 0 := by
   sorry
 
+-- mine
 theorem neg_eq_of_add_eq_zero {a b : R} (h : a + b = 0) : -a = b := by
-  sorry
+  rw [← neg_add_cancel_left a b, h, add_zero]
+  done
 
 theorem eq_neg_of_add_eq_zero {a b : R} (h : a + b = 0) : a = -b := by
   sorry
