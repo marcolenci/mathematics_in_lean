@@ -51,7 +51,7 @@ example (h₀ : a ≤ b) (h₁ : b < c) (h₂ : c ≤ d) (h₃ : d < e) : a < e 
 --mine
   apply lt_of_le_of_lt
   · exact h₀
-  · apply lt_trans h₁ -- the tutorial didn't mention lt_trans!!
+  · apply lt_trans h₁
     apply lt_of_le_of_lt h₂ h₃  -- could have used 'exact' here
   done
 
