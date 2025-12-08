@@ -16,6 +16,10 @@ variable (h : a ≤ b) (h' : b ≤ c)
 #check (le_trans h : b ≤ c → a ≤ c)
 #check (le_trans h h' : a ≤ c)
 
+-- mine
+#check le_refl
+#check le_refl a
+
 end
 
 example (x y z : ℝ) (h₀ : x ≤ y) (h₁ : y ≤ z) : x ≤ z := by
@@ -44,7 +48,12 @@ example (x : ℝ) : x ≤ x :=
 
 -- Try this.
 example (h₀ : a ≤ b) (h₁ : b < c) (h₂ : c ≤ d) (h₃ : d < e) : a < e := by
-  sorry
+--mine
+  apply lt_of_le_of_lt
+  · exact h₀
+  · apply lt_trans h₁ -- the tutorial didn't mention lt_trans!!
+    apply lt_of_le_of_lt h₂ h₃  -- could have used 'exact' here
+  done
 
 example (h₀ : a ≤ b) (h₁ : b < c) (h₂ : c ≤ d) (h₃ : d < e) : a < e := by
   linarith
@@ -124,4 +133,3 @@ example : |a*b| ≤ (a^2 + b^2)/2 := by
   sorry
 
 #check abs_le'.mpr
-
