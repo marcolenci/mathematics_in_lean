@@ -160,8 +160,12 @@ namespace MyGroup
 
 -- mine
 theorem mul_inv_cancel (a : G) : a * a⁻¹ = 1 := by
-  group
+  have : a * (a⁻¹ * a) * a ⁻¹ = a * a⁻¹ := by
+    rw [inv_mul_cancel a, mul_assoc, one_mul a⁻¹]
+
   -- finish this!!
+
+#check one_mul (a⁻¹)
 
 theorem mul_one (a : G) : a * 1 = a := by
   sorry
