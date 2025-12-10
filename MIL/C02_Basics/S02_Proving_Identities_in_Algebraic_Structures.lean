@@ -160,12 +160,18 @@ namespace MyGroup
 
 -- mine
 theorem mul_inv_cancel (a : G) : a * a⁻¹ = 1 := by
-  have : a * (a⁻¹ * a) * a ⁻¹ = a * a⁻¹ := by
+  have h1 : a * (a⁻¹ * a) * a ⁻¹ = a * a⁻¹ := by
     rw [inv_mul_cancel a, mul_assoc, one_mul a⁻¹]
+  have h2 : a * a⁻¹ * (a * a⁻¹) = a * a⁻¹ := by
+    rw [← mul_assoc] at h1
+    rw [← mul_assoc]
+    exact h1
+  have h4 : (a * a⁻¹)⁻¹ * (a * a ⁻¹) * (a * a ⁻¹) = 1 := by
+    rw [mul_assoc, h2, inv_mul_cancel]
+  rw [inv_mul_cancel, one_mul] at h4
+  exact h4
+  -- finally!!
 
-  -- finish this!!
-
-#check one_mul (a⁻¹)
 
 theorem mul_one (a : G) : a * 1 = a := by
   sorry
