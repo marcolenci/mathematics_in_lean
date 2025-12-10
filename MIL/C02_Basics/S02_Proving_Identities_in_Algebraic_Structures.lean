@@ -108,7 +108,6 @@ theorem neg_neg (a : R) : - -a = a := by
   have : -a + a = 0 := by
     exact neg_add_cancel a
   exact neg_eq_of_add_eq_zero this
-  done
 
 end MyRing
 
@@ -159,8 +158,10 @@ variable {G : Type*} [Group G]
 
 namespace MyGroup
 
+-- mine
 theorem mul_inv_cancel (a : G) : a * a⁻¹ = 1 := by
-  sorry
+  group
+  -- finish this!!
 
 theorem mul_one (a : G) : a * 1 = a := by
   sorry
