@@ -158,7 +158,7 @@ variable {G : Type*} [Group G]
 
 namespace MyGroup
 
--- mine
+-- all the next ones are mine
 theorem mul_inv_cancel (a : G) : a * a⁻¹ = 1 := by
   have h1 : a * (a⁻¹ * a) * a ⁻¹ = a * a⁻¹ := by
     rw [inv_mul_cancel a, mul_assoc, one_mul a⁻¹]
@@ -166,18 +166,33 @@ theorem mul_inv_cancel (a : G) : a * a⁻¹ = 1 := by
     rw [← mul_assoc] at h1
     rw [← mul_assoc]
     exact h1
-  have h4 : (a * a⁻¹)⁻¹ * (a * a ⁻¹) * (a * a ⁻¹) = 1 := by
+  have h3 : (a * a⁻¹)⁻¹ * (a * a ⁻¹) * (a * a ⁻¹) = 1 := by
     rw [mul_assoc, h2, inv_mul_cancel]
-  rw [inv_mul_cancel, one_mul] at h4
-  exact h4
+  rw [inv_mul_cancel, one_mul] at h3
+  exact h3
   -- finally!!
 
-
 theorem mul_one (a : G) : a * 1 = a := by
-  sorry
+  rw [← inv_mul_cancel a, ← mul_assoc, mul_inv_cancel, one_mul]
+
+theorem mylemma {a b : G} (h : a * b = 1) : a = b⁻¹ := by
+  have : a * b * b⁻¹ = b⁻¹ := by
+    rw [h, one_mul]
+  rw [mul_assoc, mul_inv_cancel, mul_one] at this
+  exact this
 
 theorem mul_inv_rev (a b : G) : (a * b)⁻¹ = b⁻¹ * a⁻¹ := by
-  sorry
+  have h₀ : b⁻¹ * (a⁻¹ * a) * b = 1 := by
+    rw [inv_mul_cancel, mul_assoc, one_mul, inv_mul_cancel]
+  have h₁ : b⁻¹ * a⁻¹ * (a * b) = 1 := by
+    rw [← mul_assoc]
+    rw [← mul_assoc] at h₀
+    exact h₀
+  rw [mylemma h₁]
+
+
+
+
 
 end MyGroup
 
