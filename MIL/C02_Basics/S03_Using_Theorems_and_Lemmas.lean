@@ -134,7 +134,7 @@ example : 2*a*b ≤ a^2 + b^2 := by
     _ ≤ 2*a*b + (a^2 - 2*a*b + b^2) := add_le_add (le_refl _) h
     _ = a^2 + b^2 := by ring
 
-example : 2*a*b ≤ a^2 + b^2 := by
+theorem renamed : 2*a*b ≤ a^2 + b^2 := by
   have h : 0 ≤ a^2 - 2*a*b + b^2
   calc
     a^2 - 2*a*b + b^2 = (a - b)^2 := by ring
@@ -142,6 +142,12 @@ example : 2*a*b ≤ a^2 + b^2 := by
   linarith
 
 example : |a*b| ≤ (a^2 + b^2)/2 := by
-  sorry
+  have h1 : |a*b| = |a| * |b| := abs_mul a b
+  have h2 (a : ℝ) : a^2 = |a|^2 := by
+    exact (sq_abs a).symm
+  rw [h1, h2 a, h2 b]
+  have : 2 * |a| * |b| ≤ |a|^2 + |b|^2 := renamed |a| |b|
+  linarith
+
 
 #check abs_le'.mpr

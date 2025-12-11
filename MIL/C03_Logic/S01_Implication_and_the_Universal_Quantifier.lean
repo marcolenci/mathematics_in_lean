@@ -47,6 +47,14 @@ theorem my_lemma4 :
     _ < 1 * ε := sorry
     _ = ε := sorry
 
+-- mine
+theorem my_lemma5 {x y ε : ℝ} : 0 < ε → ε ≤ 1 → |x| < ε → |y| < ε → |x * y| < ε := by
+  sorry
+
+#check my_lemma4
+#check my_lemma5
+-- notice that my_lemma4 and my_lemma5 are completely equivalent for Lean
+
 def FnUb (f : ℝ → ℝ) (a : ℝ) : Prop :=
   ∀ x, f x ≤ a
 
