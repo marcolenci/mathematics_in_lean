@@ -41,11 +41,9 @@ example : min a b = min b a := by
 example : max a b = max b a := by
   apply le_antisymm
   repeat
-  apply max_le
-    · sorry
-    · sorry
-
--- finire!!
+    apply max_le
+    · apply le_max_right
+    · apply le_max_left
 
 
 
