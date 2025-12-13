@@ -49,8 +49,20 @@ example : max a b = max b a := by
 
 example : min (min a b) c = min a (min b c) := by
   sorry
+
+--mine in tactics mode
 theorem aux : min a b + c ≤ min (a + c) (b + c) := by
-  sorry
+  have h1 : min a b + c ≤ a + c := by
+    exact add_le_add_right (min_le_left a b) c
+  have h2 : min a b + c ≤ b + c := by
+    exact add_le_add_right (min_le_right a b) c
+  exact le_min h1 h2
+--in proof mode
+example : min a b + c ≤ min (a + c) (b + c) :=
+  have h1 : min a b + c ≤ a + c := add_le_add_right (min_le_left a b) c
+  have h2 : min a b + c ≤ b + c := add_le_add_right (min_le_right a b) c
+  le_min h1 h2
+
 example : min a b + c = min (a + c) (b + c) := by
   sorry
 #check (abs_add : ∀ a b : ℝ, |a + b| ≤ |a| + |b|)
