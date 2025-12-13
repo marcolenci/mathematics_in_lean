@@ -62,6 +62,9 @@ example : min a b + c ≤ min (a + c) (b + c) :=
   have h1 : min a b + c ≤ a + c := add_le_add_right (min_le_left a b) c
   have h2 : min a b + c ≤ b + c := add_le_add_right (min_le_right a b) c
   le_min h1 h2
+--even shorter
+example : min a b + c ≤ min (a + c) (b + c) :=
+  le_min (add_le_add_right (min_le_left a b) c) (add_le_add_right (min_le_right a b) c)
 
 example : min a b + c = min (a + c) (b + c) := by
   sorry
