@@ -143,8 +143,7 @@ theorem renamed : 2*a*b ≤ a^2 + b^2 := by
 
 example : |a*b| ≤ (a^2 + b^2)/2 := by
   have h1 : |a*b| = |a| * |b| := abs_mul a b
-  have h2 (a : ℝ) : a^2 = |a|^2 := by
-    exact (sq_abs a).symm
+  have h2 (a : ℝ) : a^2 = |a|^2 := (sq_abs a).symm
   rw [h1, h2 a, h2 b]
   have : 2 * |a| * |b| ≤ |a|^2 + |b|^2 := renamed |a| |b|
   linarith
