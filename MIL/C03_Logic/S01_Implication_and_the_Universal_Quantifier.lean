@@ -175,7 +175,6 @@ theorem Subset.trans : r ⊆ s → s ⊆ t → r ⊆ t := by
   intro rsubs ssubt x xinr
   exact ssubt (rsubs xinr)
 --trying proof mode
-
 example : r ⊆ s → s ⊆ t → r ⊆ t :=
   fun rsubs ssubt x xinr ↦ ssubt (rsubs xinr)
 
@@ -204,16 +203,22 @@ example (c : ℝ) : Injective fun x ↦ x + c := by
 example {c : ℝ} (h : c ≠ 0) : Injective fun x ↦ c * x := by
   intro x₁ x₂
   dsimp
-  intro inj
-  exact (mul_right_inj' h).mp inj  -- twas hard to find this thm in mathlib!!
+  intro eq
+  exact (mul_right_inj' h).mp eq  -- twas hard to find this thm in mathlib!!
 -- again, in proof mode:
 example {c : ℝ} (h : c ≠ 0) : Injective fun x ↦ c * x :=
-  fun x₁ x₂ inj ↦ (mul_right_inj' h).mp inj
+  fun x₁ x₂ eq ↦ (mul_right_inj' h).mp eq
 
 variable {α : Type*} {β : Type*} {γ : Type*}
 variable {g : β → γ} {f : α → β}
 
 example (injg : Injective g) (injf : Injective f) : Injective fun x ↦ g (f x) := by
-  sorry
+  intro x₁ x₂
+  dsimp
+  intro eq
+  exact injf (injg eq)
+-- again, in proof mode:
+example (injg : Injective g) (injf : Injective f) : Injective fun x ↦ g (f x) :=
+  fun x₁ x₂ eq ↦ injf (injg eq)
 
 end
