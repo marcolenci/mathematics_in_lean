@@ -170,8 +170,14 @@ example : s ⊆ s := by
 
 theorem Subset.refl : s ⊆ s := fun x xs ↦ xs
 
+-- mine
 theorem Subset.trans : r ⊆ s → s ⊆ t → r ⊆ t := by
-  sorry
+  intro rsubs ssubt x xinr
+  exact ssubt (rsubs xinr)
+--trying proof mode
+
+example : r ⊆ s → s ⊆ t → r ⊆ t :=
+  fun rsubs ssubt x xinr ↦ ssubt (rsubs xinr)
 
 end
 
@@ -196,7 +202,13 @@ example (c : ℝ) : Injective fun x ↦ x + c := by
   exact (add_left_inj c).mp h'
 
 example {c : ℝ} (h : c ≠ 0) : Injective fun x ↦ c * x := by
-  sorry
+  intro x₁ x₂
+  dsimp
+  intro inj
+  exact (mul_right_inj' h).mp inj  -- twas hard to find this thm in mathlib!!
+-- again, in proof mode:
+example {c : ℝ} (h : c ≠ 0) : Injective fun x ↦ c * x :=
+  fun x₁ x₂ inj ↦ (mul_right_inj' h).mp inj
 
 variable {α : Type*} {β : Type*} {γ : Type*}
 variable {g : β → γ} {f : α → β}
