@@ -104,6 +104,7 @@ variable (f g : ℝ → ℝ)
 
 example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f x + g x := by
   intro a b aleb
+  dsimp  -- my (useless) addition
   apply add_le_add
   apply mf aleb
   apply mg aleb
@@ -111,11 +112,25 @@ example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f x + g x := by
 example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f x + g x :=
   fun a b aleb ↦ add_le_add (mf aleb) (mg aleb)
 
-example {c : ℝ} (mf : Monotone f) (nnc : 0 ≤ c) : Monotone fun x ↦ c * f x :=
-  sorry
+-- mine
+example {c : ℝ} (mf : Monotone f) (nnc : 0 ≤ c) : Monotone fun x ↦ c * f x := by
+  intro x y hxy
+  dsimp
+  apply mul_le_mul_of_nonneg_left
+  · exact (mf hxy)
+  · exact nnc
+  -- last 3 lines can be replaced by `exact mul_le_mul_of_nonneg_left (mf hxy) nnc`
+
+example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f (g x) := by
+  intro x y hxy
+  dsimp
+  exact mf (mg hxy)
+
+-- trying to compact it in proof mode
+example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f (g x) :=
+  fun x y hxy ↦ mf (mg hxy)
 
 example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f (g x) :=
-  sorry
 
 def FnEven (f : ℝ → ℝ) : Prop :=
   ∀ x, f x = f (-x)
