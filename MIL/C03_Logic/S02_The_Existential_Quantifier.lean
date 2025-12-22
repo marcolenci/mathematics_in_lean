@@ -69,6 +69,10 @@ example : FnHasUb f → FnHasUb g → FnHasUb fun x ↦ f x + g x := by
 example : FnHasUb f → FnHasUb g → FnHasUb fun x ↦ f x + g x :=
   fun ⟨a, ubfa⟩ ⟨b, ubgb⟩ ↦ ⟨a + b, fnUb_add ubfa ubgb⟩
 
+--mine (let's see if I can prodice a proof term that is more formally close to the proposition)
+example : FnHasUb f → FnHasUb g → FnHasUb fun x ↦ f x + g x :=
+  fun ⟨a, ubfa⟩ ↦ (fun ⟨b, ubgb⟩ ↦ ⟨a + b, fnUb_add ubfa ubgb⟩)
+-- great! I was able to do so; the above seems to be equivalenti to the previous proof
 end
 
 example (ubf : FnHasUb f) (ubg : FnHasUb g) : FnHasUb fun x ↦ f x + g x := by
@@ -133,8 +137,13 @@ example (divab : a ∣ b) (divbc : b ∣ c) : a ∣ c := by
   rw [ceq, beq]
   use d * e; ring
 
+--mine
 example (divab : a ∣ b) (divac : a ∣ c) : a ∣ b + c := by
-  sorry
+  rcases divab with ⟨d, rfl⟩
+  rcases divac with ⟨e, rfl⟩
+  use d + e
+  ring
+
 
 end
 
