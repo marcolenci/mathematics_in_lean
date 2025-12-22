@@ -207,7 +207,8 @@ example {c : ℝ} (h : c ≠ 0) : Injective fun x ↦ c * x := by
   exact (mul_right_inj' h).mp eq  -- twas hard to find this thm in mathlib!!
 -- again, in proof mode:
 example {c : ℝ} (h : c ≠ 0) : Injective fun x ↦ c * x :=
-  fun x₁ x₂ eq ↦ (mul_right_inj' h).mp eq
+  fun _ _ eq ↦ (mul_right_inj' h).mp eq
+  -- I had initially witten `fun x₁ x₂ eq ↦ (mul_right_inj' h).mp eq` but Lean complained
 
 variable {α : Type*} {β : Type*} {γ : Type*}
 variable {g : β → γ} {f : α → β}
@@ -219,6 +220,6 @@ example (injg : Injective g) (injf : Injective f) : Injective fun x ↦ g (f x) 
   exact injf (injg eq)
 -- again, in proof mode:
 example (injg : Injective g) (injf : Injective f) : Injective fun x ↦ g (f x) :=
-  fun x₁ x₂ eq ↦ injf (injg eq)
+  fun _ _ eq ↦ injf (injg eq)
 
 end
