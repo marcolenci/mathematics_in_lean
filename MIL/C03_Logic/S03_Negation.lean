@@ -51,6 +51,19 @@ example (h : Monotone f) (h' : f a < f b) : a < b := by
     exact h''' h'
   exact lt_of_not_ge this
 
+--copied this from the definition fo `absurd`
+section mine
+variable (p q : Prop)
+
+-- anything follows from 2 contradictory statements (notice the order: first p and then ¬p)
+example (hp : p) (hnp : ¬p) : q := absurd hp hnp
+
+-- here I do the same with the tactic exfalso
+example (hp : p) (hnp : ¬p) : q := by
+  exfalso
+  exact hnp hp
+
+end mine
 
 example (h : a ≤ b) (h' : f b < f a) : ¬Monotone f := by
   sorry
