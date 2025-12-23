@@ -83,28 +83,39 @@ end
 section
 variable {α : Type*} (P : α → Prop) (Q : Prop)
 
+--mine
 example (h : ¬∃ x, P x) : ∀ x, ¬P x := by
-  sorry
+  rintro x h₁
+  have hcontra : ∃ x, P x := ⟨ x, h₁ ⟩
+  apply absurd hcontra
+  exact h
+-- last 2 lines shortened in `exact h hcontra`
 
+--mine
 example (h : ∀ x, ¬P x) : ¬∃ x, P x := by
-  sorry
+  intro hc
+  obtain ⟨ x, hpx ⟩ := hc
+  exact (h x) hpx
 
 example (h : ¬∀ x, P x) : ∃ x, ¬P x := by
   sorry
 
+--mine
 example (h : ∃ x, ¬P x) : ¬∀ x, P x := by
-  sorry
+  intro hnot
+  obtain ⟨x, hnotpx⟩ := h
+  exact hnotpx (hnot x)
 
 example (h : ¬∀ x, P x) : ∃ x, ¬P x := by
   by_contra h'
   apply h
   intro x
-  show P x
+  show P x -- this part is useless here (see also description of `show`)
   by_contra h''
   exact h' ⟨x, h''⟩
 
-example (h : ¬¬Q) : Q := by
-  sorry
+--mine
+example (h : ¬¬Q) : Q := not_not.mp h
 
 example (h : Q) : ¬¬Q := by
   sorry
