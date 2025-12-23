@@ -114,11 +114,18 @@ example (h : ¬∀ x, P x) : ∃ x, ¬P x := by
   by_contra h''
   exact h' ⟨x, h''⟩
 
---mine
+-- these are all mine
 example (h : ¬¬Q) : Q := not_not.mp h
 
+example (h : ¬¬Q) : Q := by
+  by_contra hh
+  exact h hh
+
 example (h : Q) : ¬¬Q := by
-  sorry
+  by_contra hh
+  exact hh h
+
+example (h : Q) : ¬¬Q := fun hh ↦ hh h
 
 end
 
@@ -129,6 +136,7 @@ example (h : ¬FnHasUb f) : ∀ a, ∃ x, f x > a := by
   sorry
 
 example (h : ¬∀ a, ∃ x, f x > a) : FnHasUb f := by
+  dsimp [FnHasUb] -- as always this is useless to lean
   push_neg at h
   exact h
 
@@ -137,8 +145,11 @@ example (h : ¬FnHasUb f) : ∀ a, ∃ x, f x > a := by
   push_neg at h
   exact h
 
+--mine
 example (h : ¬Monotone f) : ∃ x y, x ≤ y ∧ f y < f x := by
-  sorry
+  dsimp [Monotone] at h
+  push_neg at h
+  exact h
 
 example (h : ¬FnHasUb f) : ∀ a, ∃ x, f x > a := by
   contrapose! h
@@ -146,6 +157,7 @@ example (h : ¬FnHasUb f) : ∀ a, ∃ x, f x > a := by
 
 example (x : ℝ) (h : ∀ ε > 0, x ≤ ε) : x ≤ 0 := by
   contrapose! h
+  simp -- I've added this to explain the term `∃ ε > 0, ε < x`, which became `∃ ε, 0 < ε ∧ ε < x`
   use x / 2
   constructor <;> linarith
 
