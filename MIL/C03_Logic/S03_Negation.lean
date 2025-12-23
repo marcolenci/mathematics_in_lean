@@ -177,4 +177,10 @@ example (h : 0 < 0) : a > 37 := by
   have h' : ¬0 < 0 := lt_irrefl 0
   contradiction
 
+--my rewriting of the above to use suffice instead of have
+example (h : 0 < 0) : a > 37 := by
+  suffices h' : ¬0 < 0
+  contradiction
+  exact lt_irrefl 0
+
 end
