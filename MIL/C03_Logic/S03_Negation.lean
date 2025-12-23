@@ -43,8 +43,14 @@ example : ¬FnHasUb fun x ↦ x :=
 #check (lt_of_not_ge : ¬a ≥ b → a < b)
 #check (le_of_not_gt : ¬a > b → a ≤ b)
 
+--mine
 example (h : Monotone f) (h' : f a < f b) : a < b := by
-  sorry
+  have : ¬ b ≤ a := by
+    intro h''
+    have h''' : ¬ f a < f b := not_lt_of_ge (h h'')
+    exact h''' h'
+  exact lt_of_not_ge this
+
 
 example (h : a ≤ b) (h' : f b < f a) : ¬Monotone f := by
   sorry
@@ -136,4 +142,3 @@ example (h : 0 < 0) : a > 37 := by
   contradiction
 
 end
-

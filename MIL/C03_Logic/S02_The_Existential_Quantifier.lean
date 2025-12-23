@@ -162,7 +162,6 @@ example {c : ℝ} (h : c ≠ 0) : Surjective fun x ↦ c * x := by
   use c⁻¹ * x
   field_simp
 
-
 example (x y : ℝ) (h : x - y ≠ 0) : (x ^ 2 - y ^ 2) / (x - y) = x + y := by
   field_simp [h]
   ring
