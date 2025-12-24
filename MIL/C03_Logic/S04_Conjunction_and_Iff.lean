@@ -4,12 +4,13 @@ import Mathlib.Data.Nat.Prime.Basic
 
 namespace C03S04
 
+--I've modified below here to make indentation evident
 example {x y : ℝ} (h₀ : x ≤ y) (h₁ : ¬y ≤ x) : x ≤ y ∧ x ≠ y := by
   constructor
   · assumption
-  intro h
-  apply h₁
-  rw [h]
+  · intro h
+    apply h₁
+    rw [h]
 
 example {x y : ℝ} (h₀ : x ≤ y) (h₁ : ¬y ≤ x) : x ≤ y ∧ x ≠ y :=
   ⟨h₀, fun h ↦ h₁ (by rw [h])⟩
@@ -21,12 +22,14 @@ example {x y : ℝ} (h₀ : x ≤ y) (h₁ : ¬y ≤ x) : x ≤ y ∧ x ≠ y :=
   ⟨h₀, h⟩
 
 example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
-  rcases h with ⟨h₀, h₁⟩
+  obtain ⟨ h₀, h₁ ⟩ := h -- this is my modification; the original line is below
+  --rcases h with ⟨h₀, h₁⟩
   contrapose! h₁
   exact le_antisymm h₀ h₁
 
 example {x y : ℝ} : x ≤ y ∧ x ≠ y → ¬y ≤ x := by
   rintro ⟨h₀, h₁⟩ h'
+  dsimp at h₁ -- added by me to understand `x ≠ y`
   exact h₁ (le_antisymm h₀ h')
 
 example {x y : ℝ} : x ≤ y ∧ x ≠ y → ¬y ≤ x :=
@@ -63,8 +66,13 @@ example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
 example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x :=
   fun h' ↦ h.right (le_antisymm h.left h')
 
-example {m n : ℕ} (h : m ∣ n ∧ m ≠ n) : m ∣ n ∧ ¬n ∣ m :=
-  sorry
+--mine
+example {m n : ℕ} (h : m ∣ n ∧ m ≠ n) : m ∣ n ∧ ¬n ∣ m := by
+  rcases h with ⟨mdinv , mnotn⟩
+  constructor
+  assumption
+  contrapose! mnotn
+  exact Nat.dvd_antisymm mdinv mnotn
 
 example : ∃ x : ℝ, 2 < x ∧ x < 4 :=
   ⟨5 / 2, by norm_num, by norm_num⟩
@@ -74,7 +82,10 @@ example (x y : ℝ) : (∃ z : ℝ, x < z ∧ z < y) → x < y := by
   exact lt_trans xltz zlty
 
 example (x y : ℝ) : (∃ z : ℝ, x < z ∧ z < y) → x < y :=
-  fun ⟨z, xltz, zlty⟩ ↦ lt_trans xltz zlty
+  fun ⟨_, xltz, zlty⟩ ↦ lt_trans xltz zlty
+  /- I've modified the above line the originalread
+  `fun ⟨z, xltz, zlty⟩ ↦ lt_trans xltz zlty`
+  and gave me the yellow warning becuase `z` was nout used -/
 
 example : ∃ x : ℝ, 2 < x ∧ x < 4 := by
   use 5 / 2
@@ -86,7 +97,7 @@ example : ∃ m n : ℕ, 4 < m ∧ m < n ∧ n < 10 ∧ Nat.Prime m ∧ Nat.Prim
   norm_num
 
 example {x y : ℝ} : x ≤ y ∧ x ≠ y → x ≤ y ∧ ¬y ≤ x := by
-  rintro ⟨h₀, h₁⟩
+  rintro ⟨h₀, h₁⟩ --here I could've used just `intro`; not sure why
   use h₀
   exact fun h' ↦ h₁ (le_antisymm h₀ h')
 
@@ -101,8 +112,29 @@ example {x y : ℝ} (h : x ≤ y) : ¬y ≤ x ↔ x ≠ y := by
 example {x y : ℝ} (h : x ≤ y) : ¬y ≤ x ↔ x ≠ y :=
   ⟨fun h₀ h₁ ↦ h₀ (by rw [h₁]), fun h₀ h₁ ↦ h₀ (le_antisymm h h₁)⟩
 
-example {x y : ℝ} : x ≤ y ∧ ¬y ≤ x ↔ x ≤ y ∧ x ≠ y :=
-  sorry
+--mine
+example {x y : ℝ} : x ≤ y ∧ ¬y ≤ x ↔ x ≤ y ∧ x ≠ y := by
+  constructor
+  · intro ⟨h₁,h₂⟩
+    constructor
+    · assumption
+    · contrapose! h₂
+      linarith
+  · intro ⟨h₁,h₂⟩
+    constructor
+    · assumption
+    · contrapose! h₂
+      linarith
+--the above can be simplified to
+example {x y : ℝ} : x ≤ y ∧ ¬y ≤ x ↔ x ≤ y ∧ x ≠ y := by
+  constructor <;>
+  · intro ⟨h₁,h₂⟩
+    constructor
+    · assumption
+    · contrapose! h₂
+      linarith
+-- great job, Marco!!
+
 
 theorem aux {x y : ℝ} (h : x ^ 2 + y ^ 2 = 0) : x = 0 :=
   have h' : x ^ 2 = 0 := by sorry
