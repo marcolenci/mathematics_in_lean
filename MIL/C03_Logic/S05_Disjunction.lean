@@ -57,14 +57,32 @@ example : x < |y| → x < y ∨ x < -y := by
 
 namespace MyAbs
 
+-- all theorems below are mine
 theorem le_abs_self (x : ℝ) : x ≤ |x| := by
-  sorry
+  rcases le_or_gt 0 x with h | h
+  let h' := abs_of_nonneg h
+  exact le_of_eq h'.symm
+   -- could be shortened in `exact le_of_eq (abs_of_nonneg h).symm`
+  let h' := abs_nonneg x
+  have h'' : x < |x| := lt_of_lt_of_le h h'
+  exact le_of_lt h''
+  -- could be shortened in `exact le_of_lt (lt_of_lt_of_le h h')`
 
 theorem neg_le_abs_self (x : ℝ) : -x ≤ |x| := by
   sorry
 
 theorem abs_add (x y : ℝ) : |x + y| ≤ |x| + |y| := by
-  sorry
+  rcases le_or_gt 0 (x + y) with h | h
+  · rw [abs_of_nonneg h]
+    refine add_le_add ?_ ?_ -- so I practised `refine`
+    · exact le_abs_self x
+    · exact le_abs_self y
+  · rw [abs_of_neg h]
+    ring_nf
+    refine add_le_add ?_ ?_
+    · exact neg_le_abs_self x
+    · exact neg_le_abs_self y
+
 
 theorem lt_abs : x < |y| ↔ x < y ∨ x < -y := by
   sorry
@@ -76,12 +94,16 @@ end MyAbs
 
 end
 
+-- my comments in here
 example {x : ℝ} (h : x ≠ 0) : x < 0 ∨ x > 0 := by
   rcases lt_trichotomy x 0 with xlt | xeq | xgt
   · left
     exact xlt
   · contradiction
-  · right; exact xgt
+    /- also works with `exfalso ; exact h xeq ` and `apply absurd xeq h` (remember
+    that `absurd` is a term (e.g. a "theorem" , not a tactic)-/
+  · right
+    exact xgt
 
 example {m n k : ℕ} (h : m ∣ n ∨ m ∣ k) : m ∣ n * k := by
   rcases h with ⟨a, rfl⟩ | ⟨b, rfl⟩
@@ -93,11 +115,30 @@ example {m n k : ℕ} (h : m ∣ n ∨ m ∣ k) : m ∣ n * k := by
 example {z : ℝ} (h : ∃ x y, z = x ^ 2 + y ^ 2 ∨ z = x ^ 2 + y ^ 2 + 1) : z ≥ 0 := by
   sorry
 
+--the following two are mine
 example {x : ℝ} (h : x ^ 2 = 1) : x = 1 ∨ x = -1 := by
-  sorry
+  have : (x - 1) * (x + 1) = x^2 - 1 := by ring
+  have : (x - 1) * (x + 1) = 0 := by
+    rw [this, h]
+    norm_num
+  let almost := eq_zero_or_eq_zero_of_mul_eq_zero this
+  rcases almost with h | h
+  · left
+    linarith
+  · right
+    linarith
 
 example {x y : ℝ} (h : x ^ 2 = y ^ 2) : x = y ∨ x = -y := by
-  sorry
+  have : (x - y) * (x + y) = x^2 - y^2 := by ring
+  have : (x - y) * (x + y) = 0 := by
+    rw [this, h]
+    norm_num
+  let almost := eq_zero_or_eq_zero_of_mul_eq_zero this
+  rcases almost with h | h
+  · left
+    linarith
+  · right
+    linarith
 
 section
 variable {R : Type*} [CommRing R] [IsDomain R]
@@ -125,4 +166,3 @@ example (P : Prop) : ¬¬P → P := by
 
 example (P Q : Prop) : P → Q ↔ ¬P ∨ Q := by
   sorry
-
