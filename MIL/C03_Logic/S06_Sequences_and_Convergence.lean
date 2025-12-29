@@ -26,6 +26,7 @@ theorem convergesTo_const (a : ℝ) : ConvergesTo (fun x : ℕ ↦ a) a := by
   rw [sub_self, abs_zero]
   apply εpos
 
+--mine
 theorem convergesTo_add {s t : ℕ → ℝ} {a b : ℝ}
       (cs : ConvergesTo s a) (ct : ConvergesTo t b) :
     ConvergesTo (fun n ↦ s n + t n) (a + b) := by
@@ -36,15 +37,17 @@ theorem convergesTo_add {s t : ℕ → ℝ} {a b : ℝ}
   rcases ct (ε / 2) ε2pos with ⟨Nt, ht⟩
   use max Ns Nt
   intro n ngemax
-  -- need to say that `n ≥ Ns` and `n ≥ Nt`
-  have trineq {x y : ℝ} : |x + y| ≤ |x| + |y| := abs_add_le x y
-  have quarterfinal : |s n - a| + |t n - b| < ε := by sorry
-  -- wanna use `add_lt_add` at some point
+  have ngeNs : n ≥ Ns := ge_iff_le.mpr (max_le_iff.mp (ge_iff_le.mp ngemax)).left
+  have ngeNt : n ≥ Nt := ge_iff_le.mpr (max_le_iff.mp (ge_iff_le.mp ngemax)).right
+  have quarterfinal : |s n - a| + |t n - b| < ε := by
+    let hsn := hs n ngeNs
+    let htn := ht n ngeNt
+    have : |s n - a| + |t n - b| < ε / 2 + ε / 2 := add_lt_add hsn htn
+    linarith
   apply lt_of_le_of_lt _ quarterfinal
   have semifinal : s n + t n - (a + b) = s n - a + (t n - b) := by ring
   rw [semifinal]
-  exact trineq
-
+  exact abs_add_le _ _
 
 
 theorem convergesTo_mul_const {s : ℕ → ℝ} {a : ℝ} (c : ℝ) (cs : ConvergesTo s a) :
