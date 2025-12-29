@@ -36,8 +36,8 @@ theorem convergesTo_add {s t : ℕ → ℝ} {a b : ℝ}
   rcases ct (ε / 2) ε2pos with ⟨Nt, ht⟩
   use max Ns Nt
   intro n ngemax
-  have trineq {x y : ℝ} : |x + y| ≤ |x| + |y| := abs_add_le x y
   -- need to say that `n ≥ Ns` and `n ≥ Nt`
+  have trineq {x y : ℝ} : |x + y| ≤ |x| + |y| := abs_add_le x y
   have quarterfinal : |s n - a| + |t n - b| < ε := by sorry
   -- wanna use `add_lt_add` at some point
   apply lt_of_le_of_lt _ quarterfinal
