@@ -35,7 +35,17 @@ theorem convergesTo_add {s t : ℕ → ℝ} {a b : ℝ}
   rcases cs (ε / 2) ε2pos with ⟨Ns, hs⟩
   rcases ct (ε / 2) ε2pos with ⟨Nt, ht⟩
   use max Ns Nt
-  sorry
+  intro n ngemax
+  have trineq {x y : ℝ} : |x + y| ≤ |x| + |y| := abs_add_le x y
+  -- need to say that `n ≥ Ns` and `n ≥ Nt`
+  have quarterfinal : |s n - a| + |t n - b| < ε := by sorry
+  -- wanna use `add_lt_add` at some point
+  apply lt_of_le_of_lt _ quarterfinal
+  have semifinal : s n + t n - (a + b) = s n - a + (t n - b) := by ring
+  rw [semifinal]
+  exact trineq
+
+
 
 theorem convergesTo_mul_const {s : ℕ → ℝ} {a : ℝ} (c : ℝ) (cs : ConvergesTo s a) :
     ConvergesTo (fun n ↦ c * s n) (c * a) := by
@@ -100,4 +110,3 @@ def ConvergesTo' (s : α → ℝ) (a : ℝ) :=
   ∀ ε > 0, ∃ N, ∀ n ≥ N, |s n - a| < ε
 
 end
-
