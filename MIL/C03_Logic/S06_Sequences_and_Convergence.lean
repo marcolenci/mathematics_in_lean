@@ -45,6 +45,7 @@ theorem convergesTo_add {s t : ℕ → ℝ} {a b : ℝ}
     have : |s n - a| + |t n - b| < ε / 2 + ε / 2 := add_lt_add hsn htn
     linarith
   apply lt_of_le_of_lt _ quarterfinal
+  -- I could've used `convert` instead of `apply` (can't quite tell the difference now)
   have semifinal : s n + t n - (a + b) = s n - a + (t n - b) := by ring
   rw [semifinal]
   exact abs_add_le _ _
@@ -61,11 +62,19 @@ theorem convergesTo_mul_const {s : ℕ → ℝ} {a : ℝ} (c : ℝ) (cs : Conver
   have acpos : 0 < |c| := abs_pos.mpr h
   sorry
 
+--mine
 theorem exists_abs_le_of_convergesTo {s : ℕ → ℝ} {a : ℝ} (cs : ConvergesTo s a) :
     ∃ N b, ∀ n, N ≤ n → |s n| < b := by
   rcases cs 1 zero_lt_one with ⟨N, h⟩
   use N, |a| + 1
-  sorry
+  intro n hn
+  let hnrev := ge_iff_le.mpr hn
+  have : s n = a + (s n - a) := by ring
+  rw [this]
+  let hsn := h n hnrev
+  apply lt_of_le_of_lt _ (add_lt_add_left hsn |a|)
+  exact abs_add_le _ _
+
 
 theorem aux {s t : ℕ → ℝ} {a : ℝ} (cs : ConvergesTo s a) (ct : ConvergesTo t 0) :
     ConvergesTo (fun n ↦ s n * t n) 0 := by
