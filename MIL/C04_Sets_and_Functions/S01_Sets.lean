@@ -7,11 +7,16 @@ variable {α : Type*}
 variable (s t u : Set α)
 open Set
 
+/- I've added the following to verify that an object of `Set α` is always a function `α → {True,False}
+variable {x : α}
+#check s x
+-/
+
 example (h : s ⊆ t) : s ∩ u ⊆ t ∩ u := by
   rw [subset_def, inter_def, inter_def]
   rw [subset_def] at h
   simp only [mem_setOf]
-  rintro x ⟨xs, xu⟩
+  rintro x ⟨xs, xu⟩ -- I still don't understand the difference b/w `rintro` and `intro`
   exact ⟨h _ xs, xu⟩
 
 example (h : s ⊆ t) : s ∩ u ⊆ t ∩ u := by
@@ -25,6 +30,7 @@ example (h : s ⊆ t) : s ∩ u ⊆ t ∩ u := by
 
 example (h : s ⊆ t) : s ∩ u ⊆ t ∩ u :=
   fun x ⟨xs, xu⟩ ↦ ⟨h xs, xu⟩
+  -- note that here (as usual) I don't get an error message with `fun x ⟨xs, xu⟩ ↦ ⟨h xs, xu⟩`
 
 example : s ∩ (t ∪ u) ⊆ s ∩ t ∪ s ∩ u := by
   intro x hx
@@ -43,8 +49,24 @@ example : s ∩ (t ∪ u) ⊆ s ∩ t ∪ s ∩ u := by
   · left; exact ⟨xs, xt⟩
   · right; exact ⟨xs, xu⟩
 
+--mine
 example : s ∩ t ∪ s ∩ u ⊆ s ∩ (t ∪ u) := by
-  sorry
+  intro x h
+  rw [inter_def, union_def]
+  simp only [mem_setOf]
+  rw [inter_def, union_def] at h
+  simp only [mem_setOf] at h
+  rcases h with ⟨xs, xt⟩ | ⟨xs', xu⟩
+  · constructor
+    · assumption
+    · left
+      assumption
+  · constructor
+    · assumption
+    · right
+      assumption
+
+
 example : (s \ t) \ u ⊆ s \ (t ∪ u) := by
   intro x xstu
   have xs : x ∈ s := xstu.1.1
@@ -235,4 +257,3 @@ example : ⋂₀ s = ⋂ t ∈ s, t := by
   rfl
 
 end
-
