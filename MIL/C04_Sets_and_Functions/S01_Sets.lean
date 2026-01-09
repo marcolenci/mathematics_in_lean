@@ -7,9 +7,13 @@ variable {α : Type*}
 variable (s t u : Set α)
 open Set
 
-/- I've added the following to verify that an object of `Set α` is always a function `α → {True,False}
+/-
+I've added the following to verify that an object of `Set α` is always a function `α → {True,False}
 variable {x : α}
 #check s x
+
+example (hx : x ∈ s) (hy : x ∈ t) : x ∈ s ∩ t := ⟨hx, hy⟩
+because by def `x ∈ s ∩ t` means `x ∈ s ∧ x ∈ t`
 -/
 
 example (h : s ⊆ t) : s ∩ u ⊆ t ∩ u := by
@@ -87,6 +91,7 @@ example : (s \ t) \ u ⊆ s \ (t ∪ u) := by
 
 example : s \ (t ∪ u) ⊆ (s \ t) \ u := by
   sorry
+
 example : s ∩ t = t ∩ s := by
   ext x
   simp only [mem_inter_iff]
@@ -104,8 +109,10 @@ example : s ∩ t = t ∩ s := by
   · rintro x ⟨xs, xt⟩; exact ⟨xt, xs⟩
   · rintro x ⟨xt, xs⟩; exact ⟨xs, xt⟩
 
+--mine
 example : s ∩ t = t ∩ s :=
-    Subset.antisymm sorry sorry
+  Subset.antisymm (fun _ ↦ (fun ⟨xs, xt⟩ ↦ ⟨xt, xs⟩)) (fun _ ↦ (fun ⟨xt, xs⟩ ↦ ⟨xs, xt⟩))
+
 example : s ∩ (s ∪ t) = s := by
   sorry
 
