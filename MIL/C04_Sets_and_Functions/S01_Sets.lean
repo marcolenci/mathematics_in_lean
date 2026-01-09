@@ -56,10 +56,10 @@ example : s ∩ (t ∪ u) ⊆ s ∩ t ∪ s ∩ u := by
 --mine
 example : s ∩ t ∪ s ∩ u ⊆ s ∩ (t ∪ u) := by
   intro x h
-  rw [inter_def, union_def]
-  simp only [mem_setOf]
-  rw [inter_def, union_def] at h
-  simp only [mem_setOf] at h
+  --rw [inter_def, union_def]
+  --simp only [mem_setOf]
+  --rw [inter_def, union_def] at h
+  --simp only [mem_setOf] at h
   rcases h with ⟨xs, xt⟩ | ⟨xs', xu⟩
   · constructor
     · assumption
@@ -69,7 +69,6 @@ example : s ∩ t ∪ s ∩ u ⊆ s ∩ (t ∪ u) := by
     · assumption
     · right
       assumption
-
 
 example : (s \ t) \ u ⊆ s \ (t ∪ u) := by
   intro x xstu
@@ -111,16 +110,39 @@ example : s ∩ t = t ∩ s := by
 
 --mine
 example : s ∩ t = t ∩ s :=
-  Subset.antisymm (fun _ ↦ (fun ⟨xs, xt⟩ ↦ ⟨xt, xs⟩)) (fun _ ↦ (fun ⟨xt, xs⟩ ↦ ⟨xs, xt⟩))
+  Subset.antisymm (fun _ ⟨xs, xt⟩ ↦ ⟨xt, xs⟩) (fun _ ⟨xt, xs⟩ ↦ ⟨xs, xt⟩)
 
+--mine
 example : s ∩ (s ∪ t) = s := by
-  sorry
+  apply Subset.antisymm
+  · exact inter_subset_left
+  · rintro x xs
+    constructor
+    · assumption
+    · --rw [union_def]
+      --simp only [mem_setOf]
+      left
+      assumption
+      -- the last bullet can be repleced by `exact mem_union_left t xs`
 
 example : s ∪ s ∩ t = s := by
   sorry
 
+--mine
 example : s \ t ∪ t = s ∪ t := by
-  sorry
+  ext x
+  constructor
+  · intro h1
+    rcases h1 with ⟨xs, xnt⟩ | xt
+    · exact mem_union_left t xs
+    · exact mem_union_right s xt
+  · intro h2
+    rcases h2 with xs | xt
+    · rcases em (x ∈ t) with h22 | h21
+      · exact mem_union_right (s \ t) h22
+      · left
+        exact ⟨xs, h21⟩
+    · exact mem_union_right (s \ t) xt
 
 example : s \ t ∪ t \ s = (s ∪ t) \ (s ∩ t) := by
   sorry
