@@ -298,6 +298,7 @@ example : (⋂ p ∈ primes, { x | ¬p ∣ x }) ⊆ { x | x = 1 } := by
   simp
   apply Nat.exists_prime_and_dvd
 
+--mine with no suggestions
 example : (⋃ p ∈ primes, { x | x ≤ p }) = univ := by
   apply Subset.antisymm
   · exact fun ⦃a⦄ a ↦ trivial
@@ -307,6 +308,16 @@ example : (⋃ p ∈ primes, { x | x ≤ p }) = univ := by
     obtain ⟨p, hp⟩ := Nat.exists_infinite_primes n
     use p
     exact hp.symm
+
+--mine with suggestion by the book
+example : (⋃ p ∈ primes, { x | x ≤ p }) = univ := by
+  apply eq_univ_of_forall
+  intro n
+  rw [mem_iUnion₂]
+  simp [primes]
+  obtain ⟨p, hp⟩ := Nat.exists_infinite_primes n
+  use p
+  exact hp.symm
 
 end
 
