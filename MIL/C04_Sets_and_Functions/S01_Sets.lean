@@ -138,10 +138,10 @@ example : s \ t ∪ t = s ∪ t := by
     · exact mem_union_right s xt
   · intro h2
     rcases h2 with xs | xt
-    · rcases em (x ∈ t) with h22 | h21
-      · exact mem_union_right (s \ t) h22
+    · rcases em (x ∈ t) with h21 | h22
+      · exact mem_union_right (s \ t) h21
       · left
-        exact ⟨xs, h21⟩
+        exact ⟨xs, h22⟩
     · exact mem_union_right (s \ t) xt
 
 example : s \ t ∪ t \ s = (s ∪ t) \ (s ∩ t) := by
@@ -158,6 +158,7 @@ example : evens ∪ odds = univ := by
   ext n
   simp [-Nat.not_even_iff_odd]
   apply Classical.em
+  -- also `exact em (Even n)`
 
 example (x : ℕ) (h : x ∈ (∅ : Set ℕ)) : False :=
   h
@@ -165,8 +166,21 @@ example (x : ℕ) (h : x ∈ (∅ : Set ℕ)) : False :=
 example (x : ℕ) : x ∈ (univ : Set ℕ) :=
   trivial
 
+--mine (including the example below)
+#print Nat.Prime.eq_two_or_odd
+#print Nat.odd_iff
+
 example : { n | Nat.Prime n } ∩ { n | n > 2 } ⊆ { n | ¬Even n } := by
-  sorry
+  intro n ⟨nprime, ngt2⟩
+  dsimp
+  let opt := Nat.Prime.eq_two_or_odd nprime
+  simp
+  rcases opt with h | h
+  · simp at ngt2
+    rw [h] at ngt2
+    contradiction
+  · exact Nat.odd_iff.mpr h
+
 
 #print Prime
 
