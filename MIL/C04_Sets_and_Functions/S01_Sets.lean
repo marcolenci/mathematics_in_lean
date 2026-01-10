@@ -172,7 +172,7 @@ example (x : ℕ) : x ∈ (univ : Set ℕ) :=
 
 example : { n | Nat.Prime n } ∩ { n | n > 2 } ⊆ { n | ¬Even n } := by
   intro n ⟨nprime, ngt2⟩
-  dsimp
+  --dsimp
   let opt := Nat.Prime.eq_two_or_odd nprime
   simp
   rcases opt with h | h
@@ -180,7 +180,6 @@ example : { n | Nat.Prime n } ∩ { n | n > 2 } ⊆ { n | ¬Even n } := by
     rw [h] at ngt2
     contradiction
   · exact Nat.odd_iff.mpr h
-
 
 #print Prime
 
@@ -256,14 +255,35 @@ example : (⋂ i, A i ∩ B i) = (⋂ i, A i) ∩ ⋂ i, B i := by
   · exact h1 i
   exact h2 i
 
-
+--mine
 example : (s ∪ ⋂ i, A i) = ⋂ i, A i ∪ s := by
-  sorry
+  ext x
+  simp
+  constructor
+  · intro h
+    rcases h with h1 | h2
+    · intro i
+      right
+      assumption
+    · intro i
+      left
+      exact h2 i
+  · intro h
+    rcases em (x ∈ s) with h1 | h2 -- book rsuggested `by_cases xs : x ∈ s`
+    · left
+      assumption
+    · right
+      intro i
+      let hi := h i
+      rcases hi with g1 | g2
+      · assumption
+      · contradiction
+
 
 def primes : Set ℕ :=
   { x | Nat.Prime x }
 
-example : (⋃ p ∈ primes, { x | p ^ 2 ∣ x }) = { x | ∃ p ∈ primes, p ^ 2 ∣ x } :=by
+example : (⋃ p ∈ primes, { x | p ^ 2 ∣ x }) = { x | ∃ p ∈ primes, p ^ 2 ∣ x } := by
   ext
   rw [mem_iUnion₂]
   simp
@@ -279,7 +299,14 @@ example : (⋂ p ∈ primes, { x | ¬p ∣ x }) ⊆ { x | x = 1 } := by
   apply Nat.exists_prime_and_dvd
 
 example : (⋃ p ∈ primes, { x | x ≤ p }) = univ := by
-  sorry
+  apply Subset.antisymm
+  · exact fun ⦃a⦄ a ↦ trivial
+  · intro n hn
+    rw [mem_iUnion₂]
+    simp [primes]
+    obtain ⟨p, hp⟩ := Nat.exists_infinite_primes n
+    use p
+    exact hp.symm
 
 end
 
