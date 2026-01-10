@@ -33,11 +33,20 @@ example : s ⊆ f ⁻¹' (f '' s) := by
   show f x ∈ f '' s
   use x, xs
 
+-- the next 2 are mine
 example : f '' s ⊆ v ↔ s ⊆ f ⁻¹' v := by
-  sorry
+  constructor
+  · intro h
+    simp at h
+    assumption
+  · intro h
+    simp
+    assumption
 
 example (h : Injective f) : f ⁻¹' (f '' s) ⊆ s := by
-  sorry
+  intro x ⟨x₁, xs, feq⟩
+  rw [← h feq]
+  assumption
 
 example : f '' (f ⁻¹' u) ⊆ u := by
   sorry
