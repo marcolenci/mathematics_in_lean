@@ -33,7 +33,7 @@ example : s ⊆ f ⁻¹' (f '' s) := by
   show f x ∈ f '' s
   use x, xs
 
--- the next 2 are mine
+-- the next 3 are mine
 example : f '' s ⊆ v ↔ s ⊆ f ⁻¹' v := by
   constructor
   · intro h
@@ -49,7 +49,9 @@ example (h : Injective f) : f ⁻¹' (f '' s) ⊆ s := by
   assumption
 
 example : f '' (f ⁻¹' u) ⊆ u := by
-  sorry
+  rintro y ⟨x, h1, rfl⟩ -- I admit it didn't come natural here to use `rfl` inside `rintro`
+  --simp at h1
+  assumption
 
 example (h : Surjective f) : u ⊆ f '' (f ⁻¹' u) := by
   sorry
