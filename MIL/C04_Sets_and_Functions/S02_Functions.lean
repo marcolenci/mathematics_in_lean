@@ -33,7 +33,7 @@ example : s ⊆ f ⁻¹' (f '' s) := by
   show f x ∈ f '' s
   use x, xs
 
--- the next 3 are mine
+-- the next 4 are mine
 example : f '' s ⊆ v ↔ s ⊆ f ⁻¹' v := by
   constructor
   · intro h
@@ -54,7 +54,12 @@ example : f '' (f ⁻¹' u) ⊆ u := by
   assumption
 
 example (h : Surjective f) : u ⊆ f '' (f ⁻¹' u) := by
-  sorry
+  rintro y yu
+  simp
+  obtain ⟨x, fxin⟩ := h y
+  use x
+  rw [fxin]
+  exact ⟨yu, rfl⟩
 
 example (h : s ⊆ t) : f '' s ⊆ f '' t := by
   sorry
