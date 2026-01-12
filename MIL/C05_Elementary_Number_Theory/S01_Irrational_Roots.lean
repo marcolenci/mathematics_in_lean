@@ -21,11 +21,16 @@ example (p : ℕ) (prime_p : Nat.Prime p) : 2 ≤ p ∧ ∀ m : ℕ, m < p → m
   rwa [Nat.prime_def_lt] at prime_p
 
 -- my own (stupid) version of the above
-example (p m : ℕ) (prime_p : Nat.Prime p) : 2 ≤ p → m < p → m ∣ p → m = 1 := by
-  intro pge2 mltp mdivp
+example (p m : ℕ) (prime_p : Nat.Prime p) : 2 ≤ p ∧ (m < p → m ∣ p → m = 1) := by
   rw [Nat.prime_def_lt] at prime_p
-  exact prime_p.right m mltp mdivp
-
+  obtain ⟨pge2, rest⟩ := prime_p
+  exact ⟨pge2, rest m⟩
+  /- In a prevous version, the last line was substituted by the following
+  constructor
+  · assumption
+  · exact rest m
+  -/
+  exact ⟨pge2, rest m⟩
 
 #check Nat.Prime.eq_one_or_self_of_dvd
 
@@ -56,22 +61,28 @@ example (a b c : Nat) (h : a * b = a * c) (h' : a ≠ 0) : b = c :=
   -- apply? suggests the following:
   (mul_right_inj' h').mp h
 
+--mine
 example {m n : ℕ} (coprime_mn : m.Coprime n) : m ^ 2 ≠ 2 * n ^ 2 := by
   intro sqr_eq
   have : 2 ∣ m := by
-    sorry
+    apply even_of_even_sqr
+    rw [sqr_eq]
+    simp
   obtain ⟨k, meq⟩ := dvd_iff_exists_eq_mul_left.mp this
   have : 2 * (2 * k ^ 2) = 2 * n ^ 2 := by
     rw [← sqr_eq, meq]
     ring
-  have : 2 * k ^ 2 = n ^ 2 :=
-    sorry
+  have : 2 * k ^ 2 = n ^ 2 := by
+    linarith
   have : 2 ∣ n := by
-    sorry
+    apply even_of_even_sqr
+    rw [← this]
+    simp
   have : 2 ∣ m.gcd n := by
-    sorry
+    (expose_names; exact Nat.dvd_gcd this_1 this)
   have : 2 ∣ 1 := by
-    sorry
+    rw [Nat.Coprime] at coprime_mn
+    rwa [← coprime_mn]
   norm_num at this
 
 example {m n p : ℕ} (coprime_mn : m.Coprime n) (prime_p : p.Prime) : m ^ 2 ≠ p * n ^ 2 := by
