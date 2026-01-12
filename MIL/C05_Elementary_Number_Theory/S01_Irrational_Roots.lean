@@ -79,7 +79,8 @@ example {m n : ℕ} (coprime_mn : m.Coprime n) : m ^ 2 ≠ 2 * n ^ 2 := by
     rw [← this]
     simp
   have : 2 ∣ m.gcd n := by
-    (expose_names; exact Nat.dvd_gcd this_1 this)
+    expose_names
+    exact Nat.dvd_gcd this_1 this
   have : 2 ∣ 1 := by
     rw [Nat.Coprime] at coprime_mn
     rwa [← coprime_mn]
