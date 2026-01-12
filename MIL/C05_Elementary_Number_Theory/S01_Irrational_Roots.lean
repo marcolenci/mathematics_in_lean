@@ -20,6 +20,13 @@ example : Nat.gcd 12 8 = 4 := by norm_num
 example (p : ℕ) (prime_p : Nat.Prime p) : 2 ≤ p ∧ ∀ m : ℕ, m < p → m ∣ p → m = 1 := by
   rwa [Nat.prime_def_lt] at prime_p
 
+-- my own (stupid) version of the above
+example (p m : ℕ) (prime_p : Nat.Prime p) : 2 ≤ p → m < p → m ∣ p → m = 1 := by
+  intro pge2 mltp mdivp
+  rw [Nat.prime_def_lt] at prime_p
+  exact prime_p.right m mltp mdivp
+
+
 #check Nat.Prime.eq_one_or_self_of_dvd
 
 example (p : ℕ) (prime_p : Nat.Prime p) : ∀ m : ℕ, m ∣ p → m = 1 ∨ m = p :=
@@ -117,4 +124,3 @@ example {m n k r : ℕ} (nnz : n ≠ 0) (pow_eq : m ^ k = r * n ^ k) {p : ℕ} :
   sorry
 
 #check multiplicity
-

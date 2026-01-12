@@ -186,7 +186,7 @@ example : sqrt '' { x | x ≥ 0 } = { y | y ≥ 0 } := by
 
 example : (range fun x ↦ x ^ 2) = { y : ℝ | y ≥ 0 } := by
   ext y
-  simp
+  --simp
   constructor
   · rintro ⟨x, rfl⟩
     exact sq_nonneg x
