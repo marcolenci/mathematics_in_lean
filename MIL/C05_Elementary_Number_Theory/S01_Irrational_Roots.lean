@@ -115,11 +115,9 @@ example {m n p : ℕ} (nnz : n ≠ 0) (prime_p : p.Prime) : m ^ 2 ≠ p * n ^ 2 
     simp -- as mentioned in the text simp is smart enough to reach this conclusion
   have pnez: p ≠ 0 := by
     sorry
-  have nsqnez: n ^ 2 ≠ 0 := by
-    exact nsqr_nez
   have eq2 : (p * n ^ 2).factorization p = 2 * n.factorization p + 1 := by
-    rw [← factorization_pow' n 2 p, ← Nat.Prime.factorization' prime_p, factorization_mul' pnez nsqnez p]
-    norm_num
+    rw [← factorization_pow' n 2 p, ← Nat.Prime.factorization' prime_p, factorization_mul' pnez nsqr_nez p]
+    linarith
   have : 2 * m.factorization p % 2 = (2 * n.factorization p + 1) % 2 := by
     rw [← eq1, sqr_eq, eq2]
   rw [add_comm, Nat.add_mul_mod_self_left, Nat.mul_mod_right] at this
