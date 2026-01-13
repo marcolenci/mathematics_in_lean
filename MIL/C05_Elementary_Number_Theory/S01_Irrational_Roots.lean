@@ -108,7 +108,7 @@ theorem Nat.Prime.factorization' {p : ℕ} (prime_p : p.Prime) :
   rw [prime_p.factorization]
   simp
 
---mine
+--the next two are mine (I mean I filled them!)
 example {m n p : ℕ} (nnz : n ≠ 0) (prime_p : p.Prime) : m ^ 2 ≠ p * n ^ 2 := by
   intro sqr_eq
   have nsqr_nez : n ^ 2 ≠ 0 := by simpa
@@ -130,14 +130,23 @@ example {m n k r : ℕ} (nnz : n ≠ 0) (pow_eq : m ^ k = r * n ^ k) {p : ℕ} :
   rcases r with _ | r
   · simp
   have npow_nz : n ^ k ≠ 0 := fun npowz ↦ nnz (pow_eq_zero npowz)
-  have eq1 : (m ^ k).factorization p = k * m.factorization p := by
-    sorry
+  have eq1 : (m ^ k).factorization p = k * m.factorization p := factorization_pow' m k p
+  have rp1nz : r + 1 ≠ 0 := (Nat.zero_ne_add_one r).symm
   have eq2 : ((r + 1) * n ^ k).factorization p =
       k * n.factorization p + (r + 1).factorization p := by
-    sorry
+    rw [← factorization_pow' n k p, factorization_mul' rp1nz npow_nz p]
+    ring
   have : r.succ.factorization p = k * m.factorization p - k * n.factorization p := by
     rw [← eq1, pow_eq, eq2, add_comm, Nat.add_sub_cancel]
   rw [this]
-  sorry
+  have : k * m.factorization p - k * n.factorization p =
+      k * (m.factorization p - n.factorization p) := by
+    exact (Nat.mul_sub_left_distrib k (m.factorization p) (n.factorization p)).symm
+    -- why couldn't I do the above with `ring` or `linarith`?
+  rw [this]
+  use m.factorization p - n.factorization p
+
+
+
 
 #check multiplicity
