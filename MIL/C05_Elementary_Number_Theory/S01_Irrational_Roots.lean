@@ -108,13 +108,15 @@ theorem Nat.Prime.factorization' {p : ℕ} (prime_p : p.Prime) :
   rw [prime_p.factorization]
   simp
 
+--mine
 example {m n p : ℕ} (nnz : n ≠ 0) (prime_p : p.Prime) : m ^ 2 ≠ p * n ^ 2 := by
   intro sqr_eq
   have nsqr_nez : n ^ 2 ≠ 0 := by simpa
   have eq1 : Nat.factorization (m ^ 2) p = 2 * m.factorization p := by
     simp -- as mentioned in the text simp is smart enough to reach this conclusion
   have pnez: p ≠ 0 := by
-    sorry
+    have : 2 ≤ p := (Nat.prime_def_lt.mp prime_p).1
+    linarith
   have eq2 : (p * n ^ 2).factorization p = 2 * n.factorization p + 1 := by
     rw [← factorization_pow' n 2 p, ← Nat.Prime.factorization' prime_p, factorization_mul' pnez nsqr_nez p]
     linarith
