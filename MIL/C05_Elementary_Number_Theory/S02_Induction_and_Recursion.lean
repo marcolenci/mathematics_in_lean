@@ -45,10 +45,19 @@ theorem dvd_fac {i n : ℕ} (ipos : 0 < i) (ile : i ≤ n) : i ∣ fac n := by
   rw [h]
   apply dvd_mul_right
 
+--mine
 theorem pow_two_le_fac (n : ℕ) : 2 ^ (n - 1) ≤ fac n := by
   rcases n with _ | n
   · simp [fac]
-  sorry
+  · induction' n with n ih
+    · rw [fac, fac]
+      simp
+    . simp at *
+      rw [fac, pow_succ']
+      have : 2 ≤ n + 1 + 1 := by linarith
+      -- linarith not the best choiche philosophically, but works!
+      exact Nat.mul_le_mul this ih
+
 section
 
 variable {α : Type*} (s : Finset ℕ) (f : ℕ → ℕ) (n : ℕ)
