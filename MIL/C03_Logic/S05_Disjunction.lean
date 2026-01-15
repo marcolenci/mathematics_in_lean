@@ -164,5 +164,13 @@ example (P : Prop) : ¬¬P → P := by
   · assumption
   contradiction
 
+-- I've come back to this as I was doind C05S03
 example (P Q : Prop) : P → Q ↔ ¬P ∨ Q := by
-  sorry
+  constructor
+  · intro h
+    by_cases h1 : P
+    · right ; exact h h1
+    · left ; assumption
+  · rintro (hnp | hq) hp -- this is good use of rintro!!
+    · contradiction
+    · assumption

@@ -107,14 +107,15 @@ theorem sum_id (n : ℕ) : ∑ i ∈ range (n + 1), i = n * (n + 1) / 2 := by
   rw [Finset.sum_range_succ, mul_add 2, ← ih]
   ring
 
--- mine (I did it like the above but I don't like that I *had* to copy a let)
+/- mine (I did it like the above but I don't like that I *had* to copy it,
+because it was really hard to do the elementary calculations with that 6 in
+the denominator -/
 theorem sum_sqr (n : ℕ) : ∑ i ∈ range (n + 1), i ^ 2 = n * (n + 1) * (2 * n + 1) / 6 := by
   symm; apply Nat.div_eq_of_eq_mul_right (by norm_num : 0 < 6)
   induction' n with n ih
   · simp
   · rw [Finset.sum_range_succ, mul_add 6, ← ih]
     ring
-
 
 
 end
