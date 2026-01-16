@@ -108,10 +108,16 @@ end
 section
 variable {α : Type*} [DecidableEq α] (r s t : Finset α)
 
+--the next two are mine
 example : (r ∪ s) ∩ (r ∪ t) = r ∪ s ∩ t := by
-  sorry
+  ext x
+  simp
+  tauto
+
 example : (r \ s) \ t = r \ (s ∪ t) := by
-  sorry
+  ext
+  simp
+  tauto
 
 end
 
@@ -119,9 +125,17 @@ example (s : Finset ℕ) (n : ℕ) (h : n ∈ s) : n ∣ ∏ i ∈ s, i :=
   Finset.dvd_prod_of_mem _ h
 
 theorem _root_.Nat.Prime.eq_of_dvd_of_prime {p q : ℕ}
-      (prime_p : Nat.Prime p) (prime_q : Nat.Prime q) (h : p ∣ q) :
-    p = q := by
-  sorry
+      (prime_p : Nat.Prime p) (prime_q : Nat.Prime q) (h : p ∣ q) : p = q := by
+  have := Nat.Prime.eq_one_or_self_of_dvd prime_q p h
+  rcases this with h1 | h1
+  · have := Nat.Prime.two_le prime_p
+    exfalso -- this can also be removed (linarith is smart enough)
+    linarith
+  · assumption
+
+
+
+
 
 theorem mem_of_dvd_prod_primes {s : Finset ℕ} {p : ℕ} (prime_p : p.Prime) :
     (∀ n ∈ s, Nat.Prime n) → (p ∣ ∏ n ∈ s, n) → p ∈ s := by
