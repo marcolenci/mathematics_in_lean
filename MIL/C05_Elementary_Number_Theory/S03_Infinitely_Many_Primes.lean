@@ -42,6 +42,7 @@ theorem exists_prime_factor {n : Nat} (h : 2 ≤ n) : ∃ p : Nat, p.Prime ∧ p
     use p, pp
     apply pdvd.trans mdvdn
 
+--mine
 #check Nat.factorial_pos
 #check Nat.dvd_sub'
 
