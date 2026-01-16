@@ -42,21 +42,40 @@ theorem exists_prime_factor {n : Nat} (h : 2 ≤ n) : ∃ p : Nat, p.Prime ∧ p
     use p, pp
     apply pdvd.trans mdvdn
 
+#check Nat.factorial_pos
+#check Nat.dvd_sub'
+
 theorem primes_infinite : ∀ n, ∃ p > n, Nat.Prime p := by
   intro n
   have : 2 ≤ Nat.factorial n + 1 := by
-    sorry
+    simp
+    have := Nat.factorial_pos n
+    linarith
   rcases exists_prime_factor this with ⟨p, pp, pdvd⟩
   refine ⟨p, ?_, pp⟩
-  show p > n
+  --show p > n
   by_contra ple
   push_neg at ple
-  have : p ∣ Nat.factorial n := by
-    sorry
+  have : p ∣ Nat.factorial n := Nat.dvd_factorial (Nat.Prime.pos pp) ple
   have : p ∣ 1 := by
-    sorry
-  show False
-  sorry
+    have rough := Nat.dvd_sub pdvd this
+    have smp : n.factorial + 1 - n.factorial = 1 := by field_simp
+        -- field_simp seems to be the only tactic that works here
+    rwa [← smp]
+    /-
+    The solutions suggested:
+    convert Nat.dvd_sub pdvd this
+    simp
+    -/
+  --show False
+  simp at this
+  have pge2 : 2 ≤ p := Nat.Prime.two_le pp
+  linarith
+  /-
+  The solutions suggested:
+  linarith [Nat.Prime.two_le pp]
+  -/
+
 open Finset
 
 section
@@ -224,4 +243,3 @@ theorem primes_mod_4_eq_3_infinite : ∀ n, ∃ p > n, Nat.Prime p ∧ p % 4 = 3
   have : p = 3 := by
     sorry
   contradiction
-
