@@ -124,6 +124,7 @@ end
 example (s : Finset ℕ) (n : ℕ) (h : n ∈ s) : n ∣ ∏ i ∈ s, i :=
   Finset.dvd_prod_of_mem _ h
 
+--next two are mine
 theorem _root_.Nat.Prime.eq_of_dvd_of_prime {p q : ℕ}
       (prime_p : Nat.Prime p) (prime_q : Nat.Prime q) (h : p ∣ q) : p = q := by
   have := Nat.Prime.eq_one_or_self_of_dvd prime_q p h
@@ -133,10 +134,6 @@ theorem _root_.Nat.Prime.eq_of_dvd_of_prime {p q : ℕ}
     linarith
   · assumption
 
-
-
-
-
 theorem mem_of_dvd_prod_primes {s : Finset ℕ} {p : ℕ} (prime_p : p.Prime) :
     (∀ n ∈ s, Nat.Prime n) → (p ∣ ∏ n ∈ s, n) → p ∈ s := by
   intro h₀ h₁
@@ -145,10 +142,21 @@ theorem mem_of_dvd_prod_primes {s : Finset ℕ} {p : ℕ} (prime_p : p.Prime) :
     linarith [prime_p.two_le]
   simp [Finset.prod_insert ans, prime_p.dvd_mul] at h₀ h₁
   rw [mem_insert]
-  sorry
+  obtain ⟨prime_a, less_easy⟩ := h₀
+  by_cases cs1 : p = a
+  · left ; assumption
+  · rcases h₁ with cs2 | cs2
+    · have := _root_.Nat.Prime.eq_of_dvd_of_prime prime_p prime_a cs2
+      contradiction
+    · right
+      exact ih less_easy cs2
+
 example (s : Finset ℕ) (x : ℕ) : x ∈ s.filter Nat.Prime ↔ x ∈ s ∧ x.Prime :=
   mem_filter
 
+#check Finset.prod_pos
+
+--mine
 theorem primes_infinite' : ∀ s : Finset Nat, ∃ p, Nat.Prime p ∧ p ∉ s := by
   intro s
   by_contra h
@@ -157,17 +165,28 @@ theorem primes_infinite' : ∀ s : Finset Nat, ∃ p, Nat.Prime p ∧ p ∉ s :=
   have mem_s' : ∀ {n : ℕ}, n ∈ s' ↔ n.Prime := by
     intro n
     simp [s'_def]
-    apply h
+    apply h -- I would have written `exact h n` (which works!).
+            -- `apply h` is more "implicit" but ok
   have : 2 ≤ (∏ i ∈ s', i) + 1 := by
-    sorry
+    simp
+    have : 0 < ∏ i ∈ s', i := by
+      apply Finset.prod_pos
+      intro n nins
+      have nge2 : 2 ≤ n := Nat.Prime.two_le (mem_s'.mp nins)
+      linarith
+    linarith
   rcases exists_prime_factor this with ⟨p, pp, pdvd⟩
   have : p ∣ ∏ i ∈ s', i := by
-    sorry
+    apply Finset.dvd_prod_of_mem
+    exact mem_s'.mpr pp
   have : p ∣ 1 := by
     convert Nat.dvd_sub pdvd this
     simp
-  show False
-  sorry
+  --show False
+  simp at *
+  have := Nat.Prime.two_le pp
+  linarith
+
 theorem bounded_of_ex_finset (Q : ℕ → Prop) :
     (∃ s : Finset ℕ, ∀ k, Q k → k ∈ s) → ∃ n, ∀ k, Q k → k < n := by
   rintro ⟨s, hs⟩
