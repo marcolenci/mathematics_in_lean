@@ -233,13 +233,14 @@ theorem two_le_of_mod_4_eq_3 {n : ℕ} (h : n % 4 = 3) : 2 ≤ n := by
       rw [neq] at h
       norm_num at h
 
---all the next rppof are mine (meaning, I filled the sorrys)
+--all the next proofs are mine (meaning, I filled the sorrys)
 theorem aux {m n : ℕ} (h₀ : m ∣ n) (h₁ : 2 ≤ m) (h₂ : m < n) : n / m ∣ n ∧ n / m < n := by
   constructor
   · exact Nat.div_dvd_of_dvd h₀
   · apply Nat.div_lt_self
     · exact Nat.zero_lt_of_lt h₂
     · linarith
+
 
 #print Nat.div_dvd_of_dvd
 #print Nat.div_lt_self
