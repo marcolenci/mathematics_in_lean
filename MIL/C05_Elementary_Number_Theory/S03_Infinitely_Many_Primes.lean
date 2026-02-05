@@ -206,6 +206,11 @@ theorem ex_finset_of_bounded (Q : ℕ → Prop) [DecidablePred Q] :
 
 example : 27 % 4 = 3 := by norm_num
 
+--mine
+#eval 27 % 4
+
+example : 27 % 4 ≠ 7 := by norm_num
+
 example (n : ℕ) : (4 * n + 3) % 4 = 3 := by
   rw [add_comm, Nat.add_mul_mod_self_left]
 
@@ -213,6 +218,11 @@ theorem mod_4_eq_3_or_mod_4_eq_3 {m n : ℕ} (h : m * n % 4 = 3) : m % 4 = 3 ∨
   revert h
   rw [Nat.mul_mod]
   have : m % 4 < 4 := Nat.mod_lt m (by norm_num)
+  /- my comment: the above is a cure shortcut for what I'd have written:
+  have : m % 4 < 4 := by
+    apply Nat.mod_lt
+    norm_num
+  -/
   interval_cases m % 4 <;> simp [-Nat.mul_mod_mod]
   have : n % 4 < 4 := Nat.mod_lt n (by norm_num)
   interval_cases n % 4 <;> simp
@@ -224,7 +234,16 @@ theorem two_le_of_mod_4_eq_3 {n : ℕ} (h : n % 4 = 3) : 2 ≤ n := by
       norm_num at h
 
 theorem aux {m n : ℕ} (h₀ : m ∣ n) (h₁ : 2 ≤ m) (h₂ : m < n) : n / m ∣ n ∧ n / m < n := by
-  sorry
+  constructor
+  · exact Nat.div_dvd_of_dvd h₀
+  · apply Nat.div_lt_self
+    · exact Nat.zero_lt_of_lt h₂
+    · linarith
+
+#print Nat.div_dvd_of_dvd
+#print Nat.div_lt_self
+
+
 theorem exists_prime_factor_mod_4_eq_3 {n : Nat} (h : n % 4 = 3) :
     ∃ p : Nat, p.Prime ∧ p ∣ n ∧ p % 4 = 3 := by
   by_cases np : n.Prime
@@ -243,8 +262,15 @@ theorem exists_prime_factor_mod_4_eq_3 {n : Nat} (h : n % 4 = 3) :
     apply mod_4_eq_3_or_mod_4_eq_3
     rw [neq, h]
   rcases this with h1 | h1
-  . sorry
-  . sorry
+  · by_cases mp : m.Prime
+    · use m
+    · have h2 : ∃ p, Nat.Prime p ∧ p ∣ m ∧ p % 4 = 3 := ih m mltn h1 mp
+      rcases h2 with ⟨p, pprime, pdivm, peq4mod3⟩
+      use p
+      have pdivn : p ∣ n := by sorry
+      exact ⟨pprime, pdivn, peq4mod3⟩
+  · sorry -- copy from above with (n / m) instead of m
+
 example (m n : ℕ) (s : Finset ℕ) (h : m ∈ erase s n) : m ≠ n ∧ m ∈ s := by
   rwa [mem_erase] at h
 
