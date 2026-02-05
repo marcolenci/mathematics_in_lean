@@ -233,6 +233,7 @@ theorem two_le_of_mod_4_eq_3 {n : ℕ} (h : n % 4 = 3) : 2 ≤ n := by
       rw [neq] at h
       norm_num at h
 
+--all the next rppof are mine (meaning, I filled the sorrys)
 theorem aux {m n : ℕ} (h₀ : m ∣ n) (h₁ : 2 ≤ m) (h₂ : m < n) : n / m ∣ n ∧ n / m < n := by
   constructor
   · exact Nat.div_dvd_of_dvd h₀
@@ -243,7 +244,7 @@ theorem aux {m n : ℕ} (h₀ : m ∣ n) (h₁ : 2 ≤ m) (h₂ : m < n) : n / m
 #print Nat.div_dvd_of_dvd
 #print Nat.div_lt_self
 
-
+--I did this without the `aux` theorem proved above
 theorem exists_prime_factor_mod_4_eq_3 {n : Nat} (h : n % 4 = 3) :
     ∃ p : Nat, p.Prime ∧ p ∣ n ∧ p % 4 = 3 := by
   by_cases np : n.Prime
@@ -267,9 +268,19 @@ theorem exists_prime_factor_mod_4_eq_3 {n : Nat} (h : n % 4 = 3) :
     · have h2 : ∃ p, Nat.Prime p ∧ p ∣ m ∧ p % 4 = 3 := ih m mltn h1 mp
       rcases h2 with ⟨p, pprime, pdivm, peq4mod3⟩
       use p
-      have pdivn : p ∣ n := by sorry
+      have pdivn : p ∣ n := Nat.dvd_trans pdivm mdvdn
       exact ⟨pprime, pdivn, peq4mod3⟩
-  · sorry -- copy from above with (n / m) instead of m
+  · have nmdivn : (n / m) ∣ n := Nat.div_dvd_of_dvd mdvdn
+    by_cases nmp : (n / m).Prime
+    · use n / m
+    · have : n / m < n := by
+        refine Nat.div_lt_self ?_ mge2
+        linarith
+      have h2 : ∃ p, Nat.Prime p ∧ p ∣ (n / m) ∧ p % 4 = 3 := ih (n / m) this h1 nmp
+      rcases h2 with ⟨p, pprime, pdivnm, peq4mod3⟩
+      use p
+      have pdivn : p ∣ n := Nat.dvd_trans pdivnm nmdivn
+      exact ⟨pprime, pdivn, peq4mod3⟩
 
 example (m n : ℕ) (s : Finset ℕ) (h : m ∈ erase s n) : m ≠ n ∧ m ∈ s := by
   rwa [mem_erase] at h
