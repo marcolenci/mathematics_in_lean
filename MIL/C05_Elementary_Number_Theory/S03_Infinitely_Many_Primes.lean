@@ -241,7 +241,6 @@ theorem aux {m n : ℕ} (h₀ : m ∣ n) (h₁ : 2 ≤ m) (h₂ : m < n) : n / m
     · exact Nat.zero_lt_of_lt h₂
     · linarith
 
-
 #print Nat.div_dvd_of_dvd
 #print Nat.div_lt_self
 
@@ -290,6 +289,11 @@ example (m n : ℕ) (s : Finset ℕ) (h : m ∈ erase s n) : m ≠ n ∧ m ∈ s
   simp at h
   assumption
 
+#print Nat.dvd_add_iff_left
+#print Nat.dvd_sub'
+#print Nat.dvd_sub
+
+--mine
 theorem primes_mod_4_eq_3_infinite : ∀ n, ∃ p > n, Nat.Prime p ∧ p % 4 = 3 := by
   by_contra h
   push_neg at h
@@ -302,16 +306,46 @@ theorem primes_mod_4_eq_3_infinite : ∀ n, ∃ p > n, Nat.Prime p ∧ p % 4 = 3
     exact ⟨p, pltn, pp, p4⟩
   rcases this with ⟨s, hs⟩
   have h₁ : ((4 * ∏ i ∈ erase s 3, i) + 3) % 4 = 3 := by
-    sorry
+    rw [add_comm, Nat.add_mul_mod_self_left]
   rcases exists_prime_factor_mod_4_eq_3 h₁ with ⟨p, pp, pdvd, p4eq⟩
-  have ps : p ∈ s := by
-    sorry
+  have ps : p ∈ s := (hs p).mp ⟨pp, p4eq⟩
   have pne3 : p ≠ 3 := by
-    sorry
+    by_contra peq3
+    rw [peq3] at pdvd
+    have : 3 ∣ 3 := by norm_num
+    have pdvd' := Nat.dvd_sub pdvd this
+    norm_num at pdvd'
+    rw [Nat.Prime.dvd_mul] at pdvd' -- lean has used by itself that 3 is a prime, i.e., `Nat.Prime 3`
+    norm_num at pdvd'
+    /- the above part is a beautiful trick that I admit I copied for the solutions.
+    I'd have written something like:
+    rcases pdvd' with absdiv | pdvd''
+    · contradiction
+    · .....same code as below with pdvd'' instead of pdvd'
+    -/
+    have this : 3 ∈ s.erase 3 := by
+      refine mem_of_dvd_prod_primes Nat.prime_three ?_ pdvd'
+      intro q pinsm3
+      simp at pinsm3
+      exact ((hs q).mpr pinsm3.right).left
+    simp at this
+    norm_num
   have : p ∣ 4 * ∏ i ∈ erase s 3, i := by
-    sorry
+    have : p ∣ ∏ i ∈ erase s 3, i := by
+      have : p ∈ erase s 3 := by
+        simp
+        push_neg
+        exact ⟨pne3, ps⟩
+      exact dvd_prod_of_mem (fun i ↦ i) this
+    exact Nat.dvd_mul_left_of_dvd this 4
   have : p ∣ 3 := by
-    sorry
+    have pdvd' := Nat.dvd_sub pdvd this
+    norm_num at pdvd'
+    assumption
   have : p = 3 := by
-    sorry
+    rcases Nat.Prime.eq_one_or_self_of_dvd Nat.prime_three p this with peq1 | peq3
+    · rw [peq1] at pp
+      contradiction
+    . assumption
+    --The solutions does this last have as: `apply pp.eq_of_dvd_of_prime Nat.prime_three this`
   contradiction
