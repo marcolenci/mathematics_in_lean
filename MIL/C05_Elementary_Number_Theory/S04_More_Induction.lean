@@ -75,6 +75,14 @@ theorem fib_coprime_fib_succ (n : ℕ) : Nat.Coprime (fib n) (fib (n + 1)) := by
     simp only [fib, Nat.coprime_add_self_right]
     exact ih.symm
 
+--mine: in the `induction'` notation the above would read:
+theorem fib_coprime_fib_succ' (n : ℕ) : Nat.Coprime (fib n) (fib (n + 1)) := by
+  induction' n with n ih
+  · simp
+  · simp only [fib, Nat.coprime_add_self_right]
+    --for some reason (is Lean so smart?), just `simp` is enough for the above line
+    exact ih.symm
+
 #eval fib 6
 #eval List.range 20 |>.map fib
 
@@ -95,6 +103,10 @@ theorem fib'_eq_fib : fib' = fib := by
 
 #eval fib' 10000
 
+--mine
+#eval fib 35
+#eval fib' 35
+
 theorem fib_add (m n : ℕ) : fib (m + n + 1) = fib m * fib n + fib (m + 1) * fib (n + 1) := by
   induction n generalizing m with
   | zero => simp
@@ -112,9 +124,12 @@ theorem fib_add' : ∀ m n, fib (m + n + 1) = fib m * fib n + fib (m + 1) * fib 
     simp only [fib_add_two, Nat.succ_eq_add_one, this]
     ring
 
-example (n : ℕ): (fib n) ^ 2 + (fib (n + 1)) ^ 2 = fib (2 * n + 1) := by sorry
 example (n : ℕ): (fib n) ^ 2 + (fib (n + 1)) ^ 2 = fib (2 * n + 1) := by
   rw [two_mul, fib_add, pow_two, pow_two]
+
+--mine
+example (n : ℕ): (fib n) ^ 2 + (fib (n + 1)) ^ 2 = fib (2 * n + 1) := by
+  rw [two_mul, fib_add, ← pow_two, ← pow_two]
 
 #check (@Nat.not_prime_iff_exists_dvd_lt :
   ∀ {n : ℕ}, 2 ≤ n → (¬Nat.Prime n ↔ ∃ m, m ∣ n ∧ 2 ≤ m ∧ m < n))
@@ -130,6 +145,8 @@ theorem ne_one_iff_exists_prime_dvd : ∀ {n}, n ≠ 1 ↔ ∃ p : ℕ, p.Prime 
     · have : 2 ≤ n + 2 := by omega
       rw [Nat.not_prime_iff_exists_dvd_lt this] at h
       rcases h with ⟨m, mdvdn, mge2, -⟩
+      -- the last `-` above takes a statement and hides it. So stupid here!
+      -- I'd rather do `rcases h with ⟨m, mdvdn, mge2, name⟩` or `rcases h with ⟨m, mdvdn, mge2, _⟩`
       have : m ≠ 1 := by omega
       rw [ne_one_iff_exists_prime_dvd] at this
       rcases this with ⟨p, primep, pdvdm⟩
@@ -143,3 +160,14 @@ example (m n : ℕ) : n*m = 1 → 0 < n ∧ 0 < m := by
   rcases m with (_ | m); simp
   rcases n with (_ | n) <;> simp
 
+--Of course(!) the most natural proof of the above would be
+example (m n : ℕ) : n*m = 1 → 0 < n ∧ 0 < m := by
+  intro h
+  by_contra! ha --as with `contrapose!`, `by_contra!` seems to do a push_neg aftes the `by_contra`
+  rcases le_or_gt n 0 with hn | hn --as in the examples in C03 of MIL
+  · have : n=0 := Nat.eq_zero_of_le_zero hn
+    rw [this, Nat.zero_mul] at h
+    contradiction
+  · have : m=0 := Nat.eq_zero_of_le_zero (ha hn)
+    rw [this, mul_comm, Nat.zero_mul] at h
+    contradiction

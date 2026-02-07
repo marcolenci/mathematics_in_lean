@@ -346,6 +346,7 @@ theorem primes_mod_4_eq_3_infinite : ∀ n, ∃ p > n, Nat.Prime p ∧ p % 4 = 3
     rcases Nat.Prime.eq_one_or_self_of_dvd Nat.prime_three p this with peq1 | peq3
     · rw [peq1] at pp
       contradiction
-    . assumption
-    --The solutions does this last have as: `apply pp.eq_of_dvd_of_prime Nat.prime_three this`
+    · assumption
+    -- In the solutions, the authors prove this last have as:
+    -- `apply pp.eq_of_dvd_of_prime Nat.prime_three this`
   contradiction
