@@ -186,6 +186,6 @@ example (m n : ℕ) : m * n = 1 → m = 1 ∧ n = 1 := by
   rcases m with (hm | m)
   · simp at h -- I don't need to write exfalso or contradiction after this!
   · rcases n with (hn | n)
-    · simp at h
+    · simp at h -- again, I don't need to write exfalso or contradiction after this!
     · simp at *
-      assumption
+      assumption -- but I need to write assumption here; strange...
