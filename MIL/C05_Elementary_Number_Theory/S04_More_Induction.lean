@@ -160,7 +160,7 @@ example (m n : ℕ) : n*m = 1 → 0 < n ∧ 0 < m := by
   rcases m with (_ | m); simp
   rcases n with (_ | n) <;> simp
 
---Of course(!) the most natural proof of the above would be
+-- Of course(!) the most natural proof of the above would be
 example (m n : ℕ) : n*m = 1 → 0 < n ∧ 0 < m := by
   intro h
   by_contra! ha --as with `contrapose!`, `by_contra!` seems to do a push_neg aftes the `by_contra`
@@ -171,3 +171,21 @@ example (m n : ℕ) : n*m = 1 → 0 < n ∧ 0 < m := by
   · have : m=0 := Nat.eq_zero_of_le_zero (ha hn)
     rw [this, mul_comm, Nat.zero_mul] at h
     contradiction
+
+-- Here's two exercises of mine to get some practive with recursive proofs vs rcases
+example : ∀ n : ℕ, n*1 = 1 → n = 1
+  | 0 => by
+    intro h; simp at h
+  | 1 => by
+    intro h; rfl
+  | n+2 => by
+    intro h; simp at h
+
+example (m n : ℕ) : m * n = 1 → m = 1 ∧ n = 1 := by
+  intro h
+  rcases m with (hm | m)
+  · simp at h -- I don't need to write exfalso or contradiction after this!
+  · rcases n with (hn | n)
+    · simp at h
+    · simp at *
+      assumption
