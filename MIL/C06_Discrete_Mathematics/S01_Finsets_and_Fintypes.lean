@@ -127,6 +127,10 @@ example : Finset.min' {2, 6, 7} ⟨6, by trivial⟩ = 2 := by trivial
 example (s : Finset ℕ) : s.card = #s := by rfl
 
 example (s : Finset ℕ) : s.card = ∑ i ∈ s, 1 := by rw [card_eq_sum_ones]
+--mine: you remove the linter on `i`, which isn't used (dummy variable) in this way, as learned
+example (s : Finset ℕ) : s.card = ∑ _ ∈ s, 1 := by rw [card_eq_sum_ones]
+--mine: also
+example (s : Finset ℕ) : s.card = ∑ _ ∈ s, 1 := card_eq_sum_ones s
 
 example (s : Finset ℕ) : s.card = ∑ i ∈ s, 1 := by simp
 
@@ -148,3 +152,21 @@ variable (s : Finset ℕ)
 example : (↑s : Type) = {x : ℕ // x ∈ s} := rfl
 example : Fintype.card ↑s = s.card := by simp
 end
+
+-- my sandbox to play with subtypes
+variable {x : { n : Nat // n % 2 = 0 }}
+#check x
+
+theorem two_is_even : 2 % 2 = 0 := by simp
+#check (⟨2, two_is_even⟩ : { n : Nat // n % 2 = 0 })
+
+example : x.val % 2 = 0 := x.property
+
+example (x : { n : Nat // n % 2 = 0 }) : 2 ∣ x.val := by
+  obtain ⟨n, neven⟩ := x
+  simp
+  exact Nat.dvd_of_mod_eq_zero neven
+
+example (x : { n : Nat // n % 2 = 0 }) : 2 ∣ x.val := by
+  have := x.property
+  exact Nat.dvd_of_mod_eq_zero this
