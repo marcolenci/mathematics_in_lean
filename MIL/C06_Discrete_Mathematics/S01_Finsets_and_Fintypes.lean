@@ -167,6 +167,5 @@ example (x : { n : Nat // n % 2 = 0 }) : 2 ∣ x.val := by
   simp
   exact Nat.dvd_of_mod_eq_zero neven
 
-example (x : { n : Nat // n % 2 = 0 }) : 2 ∣ x.val := by
-  have := x.property
-  exact Nat.dvd_of_mod_eq_zero this
+example (x : { n : Nat // n % 2 = 0 }) : 2 ∣ x.val :=
+  Nat.dvd_of_mod_eq_zero x.property
