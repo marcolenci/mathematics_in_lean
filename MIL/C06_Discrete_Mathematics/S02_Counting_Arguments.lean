@@ -86,25 +86,44 @@ example (n : ℕ) : #(triangle n) = (n + 1) * n / 2 := by
   convert Finset.sum_range_id (n + 1)
   simp_all
 
+--mine
 example (n : ℕ) : #(triangle n) = (n + 1) * n / 2 := by
   apply Nat.eq_div_of_mul_eq_right (by norm_num)
   let turn (p : ℕ × ℕ) : ℕ × ℕ := (n - 1 - p.1, n - p.2)
   calc 2 * #(triangle n)
       = #(triangle n) + #(triangle n) := by omega --or `exact Nat.two_mul #(triangle n)`
     _ = #(triangle n) + #(triangle n |>.image turn) := by
-          have : Function.Injective turn := by
-            intro p q injeq
-            simp [turn] at injeq
+          have : Set.InjOn turn (triangle n) := by
+            intro p hp q hq inj
+            simp [triangle, turn] at *
             rw [Prod.ext_iff]
-            obtain ⟨inj1,inj2⟩ := injeq
-            constructor
-            · sorry
-            · sorry
-          rwa [card_image_of_injective]
+            omega
+          rwa [card_image_of_injOn]
     _ = #(range n ×ˢ range (n + 1)) := by
-          sorry
+          have h1 : Disjoint (triangle n) (triangle n |>.image turn) := by
+            rw [Finset.disjoint_iff_ne]
+            intro ⟨p1,p2⟩ hp ⟨q1,q2⟩ hq
+            simp [triangle, turn] at *
+            omega
+          rw [← card_union_of_disjoint]
+          have h2 : triangle n ∪ image turn (triangle n) = range n ×ˢ range (n + 1) := by
+            ext ⟨p1,p2⟩
+            simp [triangle, turn] at *
+            constructor
+            · rintro (⟨⟨p1ltn1, p2ltn1⟩, p1ltp2⟩ |
+                  ⟨q1, q2, ⟨⟨q1ltn1, q2ltn1⟩, q1ltq2⟩, q1p1rev, q2p2rev⟩) <;> omega
+            · rintro ⟨p1ltn, p2ltn1⟩
+              by_cases css : p1 < p2
+              · left
+                omega
+              · right
+                push_neg at css
+                use n-1-p1, n-p2
+                omega
+          rwa [h2] -- why the hell do you want h1 at this point??
     _ = (n + 1) * n := by
-          sorry
+          rw [card_product, card_range, card_range]
+          ring
 
 def triangle' (n : ℕ) : Finset (ℕ × ℕ) := {p ∈ range n ×ˢ range n | p.1 ≤ p.2}
 
