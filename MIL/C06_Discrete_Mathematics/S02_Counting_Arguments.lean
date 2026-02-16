@@ -94,10 +94,15 @@ example (n : ℕ) : #(triangle n) = (n + 1) * n / 2 := by
       = #(triangle n) + #(triangle n) := by omega --or `exact Nat.two_mul #(triangle n)`
     _ = #(triangle n) + #(triangle n |>.image turn) := by
           have : Set.InjOn turn (triangle n) := by
+            intro ⟨p1,p2⟩ hp ⟨q1,q2⟩ hq
+            simp [triangle, turn] at *
+            omega
+            /- this have could also be proved (was my first version as
             intro p hp q hq inj
             simp [triangle, turn] at *
             rw [Prod.ext_iff]
             omega
+            -/
           rwa [card_image_of_injOn]
     _ = #(range n ×ˢ range (n + 1)) := by
           have h1 : Disjoint (triangle n) (triangle n |>.image turn) := by
@@ -105,7 +110,7 @@ example (n : ℕ) : #(triangle n) = (n + 1) * n / 2 := by
             intro ⟨p1,p2⟩ hp ⟨q1,q2⟩ hq
             simp [triangle, turn] at *
             omega
-          rw [← card_union_of_disjoint]
+          rw [← card_union_of_disjoint h1]
           have h2 : triangle n ∪ image turn (triangle n) = range n ×ˢ range (n + 1) := by
             ext ⟨p1,p2⟩
             simp [triangle, turn] at *
@@ -117,10 +122,10 @@ example (n : ℕ) : #(triangle n) = (n + 1) * n / 2 := by
               · left
                 omega
               · right
-                --push_neg at css
+                --Here I had initally put `push_neg at css`
                 use n-1-p1, n-p2
                 omega
-          rwa [h2] -- why the hell do you want h1 at this point??
+          rw [h2]
     _ = (n + 1) * n := by
           rw [card_product, card_range, card_range]
           ring
