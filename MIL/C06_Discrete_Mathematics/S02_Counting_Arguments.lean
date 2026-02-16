@@ -97,7 +97,7 @@ example (n : ℕ) : #(triangle n) = (n + 1) * n / 2 := by
             intro ⟨p1,p2⟩ hp ⟨q1,q2⟩ hq
             simp [triangle, turn] at *
             omega
-            /- this have could also be proved (was my first version as
+            /- this could also be proved (was my first version) as:
             intro p hp q hq inj
             simp [triangle, turn] at *
             rw [Prod.ext_iff]
