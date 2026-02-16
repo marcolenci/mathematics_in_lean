@@ -90,10 +90,17 @@ example (n : ℕ) : #(triangle n) = (n + 1) * n / 2 := by
   apply Nat.eq_div_of_mul_eq_right (by norm_num)
   let turn (p : ℕ × ℕ) : ℕ × ℕ := (n - 1 - p.1, n - p.2)
   calc 2 * #(triangle n)
-      = #(triangle n) + #(triangle n) := by
-          sorry
+      = #(triangle n) + #(triangle n) := by omega --or `exact Nat.two_mul #(triangle n)`
     _ = #(triangle n) + #(triangle n |>.image turn) := by
-          sorry
+          have : Function.Injective turn := by
+            intro p q injeq
+            simp [turn] at injeq
+            rw [Prod.ext_iff]
+            obtain ⟨inj1,inj2⟩ := injeq
+            constructor
+            · sorry
+            · sorry
+          rwa [card_image_of_injective]
     _ = #(range n ×ˢ range (n + 1)) := by
           sorry
     _ = (n + 1) * n := by
