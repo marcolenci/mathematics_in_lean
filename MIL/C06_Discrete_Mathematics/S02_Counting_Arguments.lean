@@ -117,7 +117,7 @@ example (n : ℕ) : #(triangle n) = (n + 1) * n / 2 := by
               · left
                 omega
               · right
-                push_neg at css
+                --push_neg at css
                 use n-1-p1, n-p2
                 omega
           rwa [h2] -- why the hell do you want h1 at this point??
