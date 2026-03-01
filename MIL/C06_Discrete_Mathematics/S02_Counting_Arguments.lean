@@ -2,6 +2,10 @@ import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Combinatorics.Pigeonhole
 import Mathlib.Tactic
 
+-- I've added this to solve the last exercise
+--import Mathlib.Data.Nat.GCD.Basic
+
+
 open Finset
 
 variable {α β : Type*} [DecidableEq α] [DecidableEq β] (s t : Finset α) (f : α → β)
@@ -154,14 +158,36 @@ theorem doubleCounting {α β : Type*} (s : Finset α) (t : Finset β)
 
 example (m k : ℕ) (h : m ≠ k) (h' : m / 2 = k / 2) : m = k + 1 ∨ k = m + 1 := by omega
 
+-- n / m, where (n m : ℕ) gives the truncated division
+#eval 5/2
+#eval 10/3
+
+--mine
+
+-- the following shoudl exists in mathlib according to Gemini, but I didn't find it
+lemma coprime_self_add_one (n : ℕ) : Nat.Coprime n (n + 1) := by
+  rw [Nat.coprime_self_add_right, Nat.coprime_one_right_iff]
+  trivial
+
 example {n : ℕ} (A : Finset ℕ)
     (hA : #(A) = n + 1)
     (hA' : A ⊆ range (2 * n)) :
     ∃ m ∈ A, ∃ k ∈ A, Nat.Coprime m k := by
   have : ∃ t ∈ range n, 1 < #({u ∈ A | u / 2 = t}) := by
     apply exists_lt_card_fiber_of_mul_lt_card_of_maps_to
-    · sorry
-    · sorry
+    · intro m mina
+      have := hA' mina
+      simp_all
+      omega
+    · rw [hA]
+      simp
   rcases this with ⟨t, ht, ht'⟩
   simp only [one_lt_card, mem_filter] at ht'
-  sorry
+  obtain ⟨m, ⟨mina, mdiv2⟩, k, ⟨kina, kdiv2⟩, mnek⟩ := ht' -- I like `obtain` better than `rcases`
+  use m, mina, k, kina
+  have : m = k + 1 ∨ k = m + 1 := by omega
+  rcases this with h | h
+  · rw [h]
+    exact (coprime_self_add_one k).symm -- not an obvious use of the projection `.symm` (to me)
+  · rw [h]
+    exact coprime_self_add_one m
