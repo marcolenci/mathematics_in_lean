@@ -2,9 +2,6 @@ import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Combinatorics.Pigeonhole
 import Mathlib.Tactic
 
--- I've added this to solve the last exercise
---import Mathlib.Data.Nat.GCD.Basic
-
 
 open Finset
 
