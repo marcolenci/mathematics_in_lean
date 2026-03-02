@@ -161,7 +161,7 @@ example (m k : ℕ) (h : m ≠ k) (h' : m / 2 = k / 2) : m = k + 1 ∨ k = m + 1
 
 --mine
 
--- the following shoudl exists in mathlib according to Gemini, but I didn't find it
+-- the following should exists in mathlib according to Gemini, but I didn't find it
 lemma coprime_self_add_one (n : ℕ) : Nat.Coprime n (n + 1) := by
   rw [Nat.coprime_self_add_right, Nat.coprime_one_right_iff]
   trivial
