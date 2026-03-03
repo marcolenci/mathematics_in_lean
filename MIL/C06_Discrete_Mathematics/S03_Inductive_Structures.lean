@@ -61,12 +61,24 @@ theorem map_map' (f : α → β) (g : β → γ) (as : List α) :
   . rfl
   . simp [map, ih]
 
-def reverse : List α → List α := sorry
+-- the next three are mine
+def reverse : List α → List α
+  | [] => []
+  | a :: as => reverse as ++ [a]
+
+#eval reverse [1, 2, 3, 4, 5]
 
 theorem reverse_append (as bs : List α) : reverse (as ++ bs) = reverse bs ++ reverse as := by
-  sorry
+  induction' as with a as ih
+  · rw [reverse, append_nil, nil_append]
+  · rw [cons_append, reverse, ih, reverse]
+    simp
 
-theorem reverse_reverse (as : List α) : reverse (reverse as) = as := by sorry
+theorem reverse_reverse (as : List α) : reverse (reverse as) = as := by
+  induction' as with a as ih
+  · rw [reverse, reverse]
+  · rw [reverse, reverse_append, ih, reverse, reverse, nil_append]
+    simp
 
 end MyListSpace3
 
