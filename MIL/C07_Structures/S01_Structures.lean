@@ -48,6 +48,13 @@ def add' (a b : Point) : Point where
 #check add myPoint1 myPoint2
 #check myPoint1.add myPoint2
 
+-- my own variant
+def add'' : Point → Point → Point :=
+  fun ⟨x1, y1, z1⟩ ⟨x2, y2, z2⟩ ↦ ⟨x1+x2, y1+y2, z1+z2⟩
+
+#check add'' myPoint1 myPoint2
+--
+
 end Point
 
 #check Point.add myPoint1 myPoint2
@@ -77,11 +84,14 @@ theorem addAlt_x (a b : Point) : (a.addAlt b).x = a.x + b.x := by
 theorem addAlt_comm (a b : Point) : addAlt a b = addAlt b a := by
   rw [addAlt, addAlt]
   -- the same proof still works, but the goal view here is harder to read
+  /- MY NOTE: the previous comment (written by them) seems to be wrong: all infoview
+     prompts seeem to be exactly the same here as in `theorem add_comm`: it might be
+     that it was correct on older versions of Lean -/
   ext <;> dsimp
   repeat' apply add_comm
 
 protected theorem add_assoc (a b c : Point) : (a.add b).add c = a.add (b.add c) := by
-  sorry
+  simp [add, add_assoc]
 
 def smul (r : ℝ) (a : Point) : Point :=
   sorry
@@ -206,4 +216,3 @@ variable (s : StdSimplex)
 #check s.2
 
 end
-
