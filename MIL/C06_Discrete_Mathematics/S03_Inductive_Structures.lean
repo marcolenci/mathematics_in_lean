@@ -129,7 +129,7 @@ example: flip  (node (node empty (node empty empty)) (node empty empty)) =
 theorem size_flip : ∀ t, size (flip t) = size t
   | empty    => by rfl
   | node l r => by
-    rw[flip, size, size, size_flip, size_flip]
+    rw [flip, size, size, size_flip, size_flip]
     omega
 
 end BinTree
