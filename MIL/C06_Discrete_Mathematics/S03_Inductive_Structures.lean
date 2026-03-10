@@ -118,6 +118,7 @@ theorem depth_le_size : ∀ t : BinTree, depth t ≤ size t
     have drsr := depth_le_size r
     simp
     constructor <;> omega
+-- (I believe this proof is better than the official solution)
 
 def flip : BinTree → BinTree
   | empty    => empty
@@ -129,14 +130,14 @@ example: flip  (node (node empty (node empty empty)) (node empty empty)) =
 theorem size_flip : ∀ t, size (flip t) = size t
   | empty    => by rfl
   | node l r => by
-    rw [flip, size, size, size_flip, size_flip]
+    rw[flip, size, size, size_flip, size_flip]
     omega
 
 end BinTree
 
 inductive PropForm : Type where
   | var (n : ℕ)           : PropForm
-  | fls                    : PropForm
+  | fls                   : PropForm
   | conj (A B : PropForm) : PropForm
   | disj (A B : PropForm) : PropForm
   | impl (A B : PropForm) : PropForm
@@ -159,7 +160,7 @@ def vars : PropForm → Finset ℕ
 theorem eval_eq_eval : ∀ (A : PropForm) (v1 v2 : ℕ → Bool),
     (∀ n ∈ A.vars, v1 n = v2 n) → A.eval v1 = A.eval v2
   | var n, v1, v2, h    => by simp_all [vars, eval, h]
-  | fls, v1, v2, h       => by simp_all [eval]
+  | fls, v1, v2, h      => by simp_all [eval]
   | conj A B, v1, v2, h => by
       simp_all [vars, eval, eval_eq_eval A v1 v2, eval_eq_eval B v1 v2]
   | disj A B, v1, v2, h => by
