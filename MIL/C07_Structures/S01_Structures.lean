@@ -135,6 +135,7 @@ def midpoint (a b : StandardTwoSimplex) : StandardTwoSimplex
   z_nonneg := div_nonneg (add_nonneg a.z_nonneg b.z_nonneg) (by norm_num)
   sum_eq := by field_simp; linarith [a.sum_eq, b.sum_eq]
 
+-- mine
 def weightedAverage (lambda : Real) (lambda_nonneg : 0 ≤ lambda) (lambda_le : lambda ≤ 1)
     (a b : StandardTwoSimplex) : StandardTwoSimplex
     where
