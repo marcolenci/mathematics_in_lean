@@ -124,7 +124,7 @@ def flip : BinTree → BinTree
   | empty    => empty
   | node l r => node (flip r) (flip l)
 
-example: flip (node (node empty (node empty empty)) (node empty empty)) =
+example: flip  (node (node empty (node empty empty)) (node empty empty)) =
     node (node empty empty) (node (node empty empty) empty) := rfl
 
 theorem size_flip : ∀ t, size (flip t) = size t
