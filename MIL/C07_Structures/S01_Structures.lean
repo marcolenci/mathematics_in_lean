@@ -189,6 +189,32 @@ def midpoint (n : ℕ) (a b : StandardSimplex n) : StandardSimplex n
       a.sum_eq_one, b.sum_eq_one]
     field_simp
 
+-- mine
+def weightedAverage (N : ℕ) (lambda : Real) (lambda_nonneg : 0 ≤ lambda) (lambda_le : lambda ≤ 1)
+    (a b : StandardSimplex N) : StandardSimplex N
+    where
+    V i := lambda * a.V i + (1 - lambda) * b.V i
+    NonNeg := by
+      have : 0 ≤ 1-lambda := by linarith
+      intro i
+      apply add_nonneg
+      · exact Left.mul_nonneg lambda_nonneg (a.NonNeg i)
+      · exact Left.mul_nonneg this (b.NonNeg i)
+    sum_eq_one := by
+      simp [← Finset.sum_mul, Finset.sum_add_distrib, a.sum_eq_one, b.sum_eq_one]
+
+
+
+/-
+      · exact Left.mul_nonneg lambda_nonneg a.NonNeg i
+      · exact Left.mul_nonneg this b.NonNeg i
+    sum_eq_one := by
+      simp [div_eq_mul_inv, ← Finset.sum_mul, Finset.sum_add_distrib,
+        a.sum_eq_one, b.sum_eq_one]
+      field_simp
+-/
+
+
 end StandardSimplex
 
 structure IsLinear (f : ℝ → ℝ) where
