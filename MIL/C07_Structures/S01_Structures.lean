@@ -201,18 +201,11 @@ def weightedAverage (N : ℕ) (lambda : Real) (lambda_nonneg : 0 ≤ lambda) (la
       · exact Left.mul_nonneg lambda_nonneg (a.NonNeg i)
       · exact Left.mul_nonneg this (b.NonNeg i)
     sum_eq_one := by
-      simp [← Finset.sum_mul, Finset.sum_add_distrib, a.sum_eq_one, b.sum_eq_one]
-
-
-
-/-
-      · exact Left.mul_nonneg lambda_nonneg a.NonNeg i
-      · exact Left.mul_nonneg this b.NonNeg i
-    sum_eq_one := by
-      simp [div_eq_mul_inv, ← Finset.sum_mul, Finset.sum_add_distrib,
-        a.sum_eq_one, b.sum_eq_one]
-      field_simp
--/
+      have : ∑ i, (lambda * a.V i + (1 - lambda) * b.V i) = lambda * (∑ i, a.V i) + (1 - lambda) * (∑ i, b.V i) := by
+        simp [Finset.sum_add_distrib, Finset.mul_sum]
+      rw [this, a.sum_eq_one, b.sum_eq_one]
+      ring
+/- This was harder than I thought, with that 'have' above here -/
 
 
 end StandardSimplex
