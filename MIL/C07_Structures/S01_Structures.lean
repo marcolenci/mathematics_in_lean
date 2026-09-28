@@ -177,7 +177,7 @@ structure StandardSimplex (n : ℕ) where
 namespace StandardSimplex
 
 def midpoint (n : ℕ) (a b : StandardSimplex n) : StandardSimplex n
-    where
+where
   V i := (a.V i + b.V i) / 2
   NonNeg := by
     intro i
@@ -205,8 +205,24 @@ def weightedAverage (N : ℕ) (lambda : Real) (lambda_nonneg : 0 ≤ lambda) (la
         simp [Finset.sum_add_distrib, Finset.mul_sum]
       rw [this, a.sum_eq_one, b.sum_eq_one]
       ring
-/- This was harder than I thought, with that 'have' above here -/
 
+/-
+The above was harder than I thought, with that 'have' above here
+I was able to improve it down here
+-/
+
+def weightedAverage' (N : ℕ) (lambda : Real) (lambda_nonneg : 0 ≤ lambda) (lambda_le : lambda ≤ 1)
+    (a b : StandardSimplex N) : StandardSimplex N
+  where
+  V i := lambda * a.V i + (1 - lambda) * b.V i
+  NonNeg := by
+    have : 0 ≤ 1-lambda := by linarith
+    intro i
+    apply add_nonneg
+    · exact Left.mul_nonneg lambda_nonneg (a.NonNeg i)
+    · exact Left.mul_nonneg this (b.NonNeg i)
+  sum_eq_one := by
+    simp [Finset.sum_add_distrib, ← Finset.mul_sum, a.sum_eq_one, b.sum_eq_one]
 
 end StandardSimplex
 
